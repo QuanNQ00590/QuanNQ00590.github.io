@@ -1,0 +1,598 @@
+/* ========================================
+   Additional CSS for Portfolio, Library, and Resume Pages
+======================================== */
+
+/* ========================================
+   Page Header
+======================================== */
+.page-header {
+    padding: 150px 0 80px;
+    /* CHUYỂN SANG NỀN TỐI/XANH TỐI */
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+    color: var(--text-color);
+    text-align: center;
+    border-bottom: 3px solid var(--primary-color); /* Thêm đường viền xanh nổi bật */
+}
+
+.page-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--primary-color); /* Tiêu đề trang màu xanh */
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.page-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+/* ========================================
+   PORTFOLIO PAGE
+======================================== */
+.portfolio-content {
+    padding: 80px 0;
+    background-color: var(--bg-color); /* Nền chính tối */
+}
+
+.portfolio-category {
+    margin-bottom: 80px;
+}
+
+.category-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--primary-color); /* Tiêu đề danh mục màu xanh */
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--primary-color); /* Đường viền xanh */
+}
+
+.portfolio-grid {
+    display: grid;
+    /* ĐẢM BẢO CHÍNH XÁC 2 CỘT (2 HÀNG) TRÊN MÀN HÌNH LỚN */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.portfolio-item {
+    background: var(--bg-light); /* Nền tối vừa cho card */
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+}
+
+.portfolio-item:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-hover);
+}
+
+.portfolio-item-image {
+    position: relative;
+    height: 250px; /* Chiều cao cố định cho hình chữ nhật */
+    overflow: hidden;
+}
+
+.portfolio-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.portfolio-item:hover .portfolio-item-image img {
+    transform: scale(1.1);
+}
+
+.portfolio-item-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(52, 152, 219, 0.8); /* Blue overlay */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.portfolio-item:hover .portfolio-item-overlay {
+    opacity: 1;
+}
+
+.portfolio-item-content {
+    padding: 1.5rem;
+}
+
+.portfolio-item-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.portfolio-item-description {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.portfolio-item-meta {
+    margin-bottom: 1rem;
+}
+
+.meta-role {
+    display: inline-block;
+    padding: 5px 15px;
+    background: var(--secondary-color);
+    color: var(--bg-dark);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.portfolio-item-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* ========================================
+   LIBRARY PAGE
+======================================== */
+.library-filters {
+    padding: 40px 0;
+    background: var(--bg-light); /* Nền tối vừa cho filter */
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: var(--transition);
+    background-color: var(--bg-dark); /* Nền tối cho nút */
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+}
+
+.filter-btn:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.filter-btn.active {
+    background-color: var(--primary-color); /* Nền xanh khi active */
+    color: var(--bg-dark);
+    border-color: var(--primary-color);
+}
+
+.search-box input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    display: block;
+    margin: 0 auto;
+    background-color: var(--bg-dark);
+    color: var(--text-color);
+}
+
+.library-content {
+    padding: 60px 0;
+    background-color: var(--bg-color); /* Nền chính tối */
+}
+
+.library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.library-item {
+    background: var(--bg-light); /* Nền tối vừa cho card */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+}
+
+.library-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.library-item-image {
+    height: 180px;
+    overflow: hidden;
+}
+
+.library-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.library-item-content {
+    padding: 20px;
+}
+
+.library-item-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.library-item-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+    color: var(--secondary-color);
+}
+
+.library-item-rating .stars {
+    font-size: 1.2rem;
+}
+
+.library-item-rating .rating-text {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.library-item-description {
+    color: var(--text-light);
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.library-item-meta .meta-item {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    background: rgba(44, 62, 80, 0.5);
+    color: var(--text-color);
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.library-item-tags {
+    margin-top: 10px;
+}
+
+.library-empty {
+    text-align: center;
+    padding: 50px 0;
+    color: var(--text-light);
+    font-size: 1.2rem;
+}
+
+/* ========================================
+   RESUME PAGE (ABOUT.HTML)
+======================================== */
+.resume-section {
+    padding: 60px 0;
+    background: var(--bg-color);
+}
+
+.resume-section:nth-child(even) {
+    background: var(--bg-light); /* Nền tối vừa cho phần chẵn */
+}
+
+.resume-header {
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+}
+
+.resume-header-content {
+    padding: 30px;
+    border-radius: 10px;
+    background: var(--bg-light);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    border: 2px solid var(--primary-color); /* Thêm viền xanh nổi bật */
+}
+
+.resume-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+}
+
+.resume-header-text h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.resume-header-text p {
+    font-size: 1.2rem;
+    color: var(--text-light);
+}
+
+.resume-content p {
+    color: var(--text-light);
+}
+
+.experience-list,
+.education-list {
+    display: grid;
+    gap: 30px;
+    padding-top: 10px;
+}
+
+.experience-item,
+.education-item {
+    padding-left: 30px;
+    position: relative;
+    border-left: 3px solid var(--primary-color); /* Đường viền thời gian màu xanh */
+}
+
+.experience-item::before,
+.education-item::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 0;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: 3px solid var(--bg-color); /* Viền tối để nổi bật trên nền */
+}
+
+.experience-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.experience-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.experience-company,
+.education-school {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-bottom: 0.3rem;
+}
+
+.experience-period,
+.education-period {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 300;
+}
+
+.experience-location {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-top: 0.3rem;
+}
+
+.experience-description,
+.education-description {
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+/* Download Button */
+.resume-download {
+    padding: 60px 0;
+    text-align: center;
+    background: var(--bg-light); /* Nền tối vừa cho khu vực CV */
+}
+
+.btn-large {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+}
+
+/* ========================================
+   Responsive Design for New Pages
+======================================== */
+@media (max-width: 1200px) {
+    /* Đảm bảo layout 2 cột cố định trên màn hình lớn vẫn hoạt động tốt */
+    .portfolio-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .page-subtitle {
+        font-size: 1rem;
+    }
+
+    .portfolio-grid,
+    .library-grid {
+        /* Chuyển sang 1 cột trên di động */
+        grid-template-columns: 1fr;
+    }
+
+    .filter-buttons {
+        flex-direction: column;
+    }
+
+    .filter-btn {
+        width: 100%;
+    }
+
+    .resume-header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .resume-avatar {
+        margin-bottom: 20px;
+    }
+
+    .resume-header-text {
+        text-align: center;
+    }
+
+    .experience-header {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .experience-period {
+        margin-top: 5px;
+    }
+}
+/* ========================================
+   Project Card - Smart Hover Overlay (Homepage)
+======================================== */
+
+.project-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    position: relative;
+}
+
+.project-image {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+/* Chỉ hover nếu có link */
+.project-card[data-link]:not([data-link=""]) {
+    cursor: pointer;
+}
+
+.project-card[data-link]:not([data-link=""]):hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-hover);
+}
+
+.project-card[data-link]:not([data-link=""]):hover .project-image img {
+    transform: scale(1.1);
+}
+
+/* Overlay */
+.project-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(52, 152, 219, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.project-card[data-link]:not([data-link=""]):hover .project-overlay {
+    opacity: 1;
+}
+
+.btn-view {
+    padding: 12px 30px;
+    background: white;
+    color: var(--secondary-color);
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: var(--transition);
+    pointer-events: auto;
+}
+
+.btn-view:hover {
+    background: #f8f9fa;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .project-image {
+        height: 200px;
+    }
+    .btn-view {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+/* ========================================
+   PORTFOLIO: SYNC BUTTON WITH INDEX.HTML
+======================================== */
+.portfolio-item-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.78);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: 15px;
+    backdrop-filter: blur(2px);
+}
+
+.portfolio-item:hover .portfolio-item-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* === NÚT "View Details" – ĐỒNG BỘ VỚI .btn-view TRÊN INDEX === */
+.btn-view-details {
+    padding: 12px 30px;
+    background: white;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-view-details:hover {
+    background: #f8f9fa;
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio of Gà Gô - Complete list of video game and board game projects">
+    <title>Portfolio - Gà Gô</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Gà Gô</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="portfolio.html" class="nav-link active">Portfolio</a></li>
+                <li><a href="about.html" class="nav-link">Resume</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Portfolio</h1>
+            <p class="page-subtitle">A showcase of my work in video games and board games</p>
+        </div>
+    </section>
+    
+    <section class="portfolio-filters library-filters">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Projects</button>
+                <button class="filter-btn" data-filter="casino">Casino</button>
+                <button class="filter-btn" data-filter="casual">Casual</button>
+                <button class="filter-btn" data-filter="idle-rpg">Idle RPG</button>
+                <button class="filter-btn" data-filter="kids-games">Kids Games</button>
+                <button class="filter-btn" data-filter="hybrid">Hybrid</button>
+                <button class="filter-btn" data-filter="gamefi">GameFi</button>
+                <button class="filter-btn" data-filter="puzzle">Puzzle</button>
+                <button class="filter-btn" data-filter="prototype">Prototype</button>
+            </div>
+            <div class="search-sort-group">
+                <div class="search-box">
+                    <input type="text" id="portfolioSearch" placeholder="Search projects by Title or Tag..." class="search-input">
+                </div>
+                <div class="sort-box">
+                    <label for="portfolioSort" class="sort-label">Sort by:</label>
+                    <select id="portfolioSort" class="sort-select">
+                        <option value="default">Default Order</option>
+                        <option value="title-asc">Title (A-Z)</option>
+                        <option value="title-desc">Title (Z-A)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio-content">
+        <div class="container">
+            
+            <!-- CASINO GAMES -->
+            <div class="portfolio-category" data-group="casino">
+                <h2 class="category-title">Casino Game</h2>
+                <div class="portfolio-grid">
+                    <article class="portfolio-item" data-tags="board-game, strategy, casino" data-item-link="https://apps.apple.com/us/app/k%E1%BB%B3-chi%E1%BA%BFn-game-co-tuong-co-up/id1043418329">
+                        <div class="portfolio-item-image">
+                            <img src="images/KyThanh.jpg" alt="Kỳ Thánh"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Kỳ Thánh</h3>
+                            <p class="portfolio-item-description">Cờ Tướng (Chinese Chess): A Traditional PVP Folk Game.</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Board Game</span>
+                                <span class="tag">Strategy</span>
+                                <span class="tag">Casino</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="portfolio-item" data-tags="board-game, strategy, casino" data-item-link="https://appmagic.rocks/ipad/ionline-danh-bai-online/559708971">
+                        <div class="portfolio-item-image">
+                            <img src="images/ionline.jpg" alt="IOnline"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">iOnline</h3>
+                            <p class="portfolio-item-description">Casino Portal</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Board Game</span>
+                                <span class="tag">Strategy</span>
+                                <span class="tag">Casino</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="portfolio-item" data-tags="card-game, casino, gambling" data-item-link="#">
+                        <div class="portfolio-item-image">
+                            <img src="images/Rikvip.jpg" alt="Rikvip Card Game">
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Rikvip</h3>
+                            <p class="portfolio-item-description">The most popular card game portal in Vietnam, featuring over 20 mini-games.</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Card Game</span>
+                                <span class="tag">Casino</span>
+                                <span class="tag">Gambling</span>
+                            </div>
+                        </div>
+                    </article>
+					
+					<article class="portfolio-item" data-tags="card-game, casino, gambling" data-item-link="#">
+                        <div class="portfolio-item-image">
+                            <img src="images/777.jpg" alt="777 Portal">
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">777 Portal</h3>
+                            <p class="portfolio-item-description">Asia Casino Portal Game.</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Card Game</span>
+                                <span class="tag">Casino</span>
+                                <span class="tag">Gambling</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="portfolio-item" data-tags="arcade, shooter, casino" data-item-link="#">
+                        <div class="portfolio-item-image">
+                            <img src="images/project2.jpg" alt="Fishing Hunter"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Fishing Hunter</h3>
+                            <p class="portfolio-item-description">A funny PVP Fishing Game.</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Arcade</span>
+                                <span class="tag">Shooter</span>
+                                <span class="tag">Casino</span>
+                            </div>
+                        </div>
+                    </article>
+					<article class="portfolio-item" data-tags="arcade, shooter, casino" data-item-link="#">
+                        <div class="portfolio-item-image">
+                            <img src="images/ChanSanDinh.jpg" alt="Chắn Sân Đình"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Chắn Sân Đình</h3>
+                            <p class="portfolio-item-description">Chắn: A Traditional PVP Folk Game</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Board Game</span>
+                                <span class="tag">Strategy</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- PUZZLE/CASUAL/HYBRID GAMES -->
+            <div class="portfolio-category" data-group="hybrid">
+                <h2 class="category-title">Puzzle/Casual/Hybrid Games</h2>
+                <div class="portfolio-grid">
+                    <article class="portfolio-item" data-tags="casual, merge, idle-rpg" data-item-link="https://appmagic.rocks/iphone/auto-beast-merge-idle-tycoon-/1523775393">
+                        <div class="portfolio-item-image">
+                            <img src="images/MergeBeast.jpg" alt="Merge Beast"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Merge Beast</h3>
+                            <p class="portfolio-item-description">Idle RPG: Merge Beasts, Build Armies and Defeat Bosses.</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Casual</span>
+                                <span class="tag">Merge</span>
+                                <span class="tag">Idle RPG</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-item" data-tags="kids-games, casual, simulation" data-item-link="https://play.google.com/store/apps/details?id=com.bonbongame.doctors.care.hospital.kids.games">
+                        <div class="portfolio-item-image">
+                            <img src="images/HappyHospital.jpg" alt="Happy Hospital"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Happy Hospital</h3>
+                            <p class="portfolio-item-description">Fun Simulation Game for Kids – Become a Hero Doctor and Save the Day!</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Kids Games</span>
+                                <span class="tag">Casual</span>
+                                <span class="tag">Simulation</span>
+                            </div>
+                        </div>
+                    </article>
+					
+					<article class="portfolio-item" data-tags="kids-games, casual, simulation" data-item-link="#">
+                        <div class="portfolio-item-image">
+                            <img src="images/PaperDoll.jpg" alt="PaperDoll"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Paper Doll</h3>
+                            <p class="portfolio-item-description">Fun Simulation Fashion Game for Kids – Become a Star!</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Kids Games</span>
+                                <span class="tag">Casual</span>
+                                <span class="tag">Simulation</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="portfolio-item" data-tags="hybrid, idle-rpg, casual" data-item-link="https://play.google.com/store/apps/details?gl=US&hl=en-US&id=com.idle.cat.rpg">
+                        <div class="portfolio-item-image">
+                            <img src="images/CatAdventure.jpg" alt="Idle Cat Adventure"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Idle Cat Adventure</h3>
+                            <p class="portfolio-item-description">Idle RPG: Embark on Adventures, Forge Allies, Conquer Epic Bosses!</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Hybrid</span>
+                                <span class="tag">Idle RPG</span>
+                                <span class="tag">Casual</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-item" data-tags="hybrid, idle-rpg, casual" data-item-link="https://appmagic.rocks/google-play/fortress-defense/com.backpack.fortress.defense">
+                        <div class="portfolio-item-image">
+                            <img src="images/Fortress.jpg" alt="Fortress Defense"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Fortress Defense</h3>
+                            <p class="portfolio-item-description">New Funny Mechanic</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Hybrid</span>
+                                <span class="tag">Idle RPG</span>
+                                <span class="tag">Casual</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-item" data-tags="hybrid, idle-rpg, casual" data-item-link="https://play.google.com/store/apps/details?id=com.ohze.bag.fighter">
+                        <div class="portfolio-item-image">
+                            <img src="images/BackpackBattle.jpg" alt="Backpack Battle"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Backpack Battle: Bag Fighter</h3>
+                            <p class="portfolio-item-description">Merge and Battle</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Hybrid</span>
+                                <span class="tag">Idle RPG</span>
+                                <span class="tag">Casual</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-item" data-tags="hybrid, idle-rpg, casual" data-item-link="https://appmagic.rocks/googletin-play/dot-army-idle-rts/com.fc.oh.dot.army">
+                        <div class="portfolio-item-image">
+                            <img src="images/DotArmy.jpg" alt="Dot Army: Idle RTS"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Dot Army: Idle RTS</h3>
+                            <p class="portfolio-item-description">Real Time Strategy Game</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Hybrid</span>
+                                <span class="tag">Idle RPG</span>
+                                <span class="tag">Casual</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-item" data-tags="hybrid, idle-rpg, casual" data-item-link="https://appmagic.rocks/google-play/tetris-defense/com.tetris.defense.tower">
+                        <div class="portfolio-item-image">
+                            <img src="images/TetrisDefense.jpg" alt="Tetris Defense"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Tetris Defense</h3>
+                            <p class="portfolio-item-description">Tetris but more fun</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Hybrid</span>
+                                <span class="tag">Idle RPG</span>
+                                <span class="tag">Casual</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-item" data-tags="hybrid, idle-rpg, casual" data-item-link="https://appmagic.rocks/google-play/gear-train-defense/com.ohze.traindefense">
+                        <div class="portfolio-item-image">
+                            <img src="images/TrainDefense.jpg" alt="Train Defense"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Gear Train Defense</h3>
+                            <p class="portfolio-item-description">Defense your base with Train moving around</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Hybrid</span>
+                                <span class="tag">Idle RPG</span>
+                                <span class="tag">Casual</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-item" data-tags="hybrid, idle-rpg, casual" data-item-link="https://appmagic.rocks/google-play/hero-tower-survival/com.abi.towersurvival">
+                        <div class="portfolio-item-image">
+                            <img src="images/TDS.jpg" alt="TDS"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Hero Tower Survival</h3>
+                            <p class="portfolio-item-description">Build your Tower</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Hybrid</span>
+                                <span class="tag">Idle RPG</span>
+                                <span class="tag">Casual</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="portfolio-item" data-tags="puzzle, casual" data-item-link="https://appmagic.rocks/google-play/drop-merge-number-sort-puzzle/com.pl.oh.drop.merge.number">
+                        <div class="portfolio-item-image">
+                            <img src="images/2248.jpg" alt="Drop Merge: Number Sort Puzzle"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Drop Merge: Number Sort Puzzle</h3>
+                            <p class="portfolio-item-description">Puzzle 2048</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Puzzle</span>
+                                <span class="tag">Casual</span>
+                            </div>
+                        </div>
+                    </article>
+					<article class="portfolio-item" data-tags="puzzle, casual" data-item-link="https://appmagic.rocks/google-play/alphabetris/com.inntrivia.alphabetris">
+                        <div class="portfolio-item-image">
+                            <img src="images/Alphabetris.jpg" alt="Alphabetris"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Alphabetris</h3>
+                            <p class="portfolio-item-description">Alphabet & Tetris</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Puzzle</span>
+                                <span class="tag">Casual</span>
+                            </div>
+                        </div>
+                    </article>
+					<article class="portfolio-item" data-tags="puzzle, casual" data-item-link="https://appmagic.rocks/google-play/drop-merge-number-sort-puzzle/com.pl.oh.drop.merge.number">
+                        <div class="portfolio-item-image">
+                            <img src="images/ShadowStickman.jpg" alt="Shadow Stickman: Dark rising – Ninja warriors"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Shadow Stickman: Dark rising – Ninja warriors</h3>
+                            <p class="portfolio-item-description">Hack&Slash</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">RPG</span>
+                                <span class="tag">Casual</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- GAMEFI -->
+            <div class="portfolio-category" data-group="gamefi">
+                <h2 class="category-title">Gamefi</h2>
+                <div class="portfolio-grid">
+                    <article class="portfolio-item" data-tags="gamefi, rpg" data-item-link="#">
+                        <div class="portfolio-item-image">
+                            <img src="images/OlySport.jpg" alt="OlySport"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">OlySport</h3>
+                            <p class="portfolio-item-description">1st ESport/Horse Racing GameFi in Vietnam</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Gamefi</span>
+                                <span class="tag">RPG</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="portfolio-item" data-tags="gamefi, rpg" data-item-link="#">
+                        <div class="portfolio-item-image">
+                            <img src="images/Atlantis.jpg" alt="Atlantis">
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">Atlantis Universe</h3>
+                            <p class="portfolio-item-description">MMORPG, 3D GameFi</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Gamefi</span>
+                                <span class="tag">RPG</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="portfolio-item" data-tags="gamefi, rpg" data-item-link="#">
+                        <div class="portfolio-item-image">
+                            <img src="images/HunterVerse.jpg" alt="HunterVerse"> 
+                            <div class="portfolio-item-overlay">
+                                <button class="btn-view-details">View Project</button>
+                            </div>
+                        </div>
+                        <div class="portfolio-item-content">
+                            <h3 class="portfolio-item-title">HunterVerse</h3>
+                            <p class="portfolio-item-description">MMORPG, 3D GameFi</p>
+                            <div class="portfolio-item-tags">
+                                <span class="tag">Gamefi</span>
+                                <span class="tag">RPG</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="library-empty" id="emptyState" style="display: none;">
+                <p>No projects found matching your criteria.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Gà Gô. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" aria-label="LinkedIn">LinkedIn</a>
+                <a href="#" aria-label="Twitter">Twitter</a>
+                <a href="#" aria-label="GitHub">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="portfolio.js"></script>
+</body>
+</html>

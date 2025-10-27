@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio of Gà Gô - Senior Game Designer">
+    <title>Gà Gô - Senior Game Designer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Gà Gô</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="portfolio.html" class="nav-link">Portfolio</a></li>
+                <li><a href="about.html" class="nav-link">Resume</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="title-line">Nguyễn Quý Quân</span>
+                </h1>
+                <p class="hero-subtitle">Senior Game Designer</p>
+                <div class="hero-buttons">
+                    <a href="portfolio.html" class="btn btn-primary">View My Projects</a>
+                    <a href="#contact" class="btn btn-secondary">Contact Me</a>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span></span>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image">
+                    <div class="image-wrapper">
+                        <img src="images/profile.jpg" alt="Gà Gô" class="profile-img">
+                        <div class="image-overlay"></div>
+                    </div>
+                </div>
+                <div class="about-content">
+                    <h2 class="section-title">About Me</h2>
+                    <div class="about-text">
+                        <p>With 12+ years as a Senior Game Designer, I've crafted addictive experiences across genres: brain-twisting puzzles, time-stealing casuals, emotional RPGs, and high-stakes gambling titles. Passion fuels my endless experimentation, turning ideas into joyful player hooks, vibrant communities, and boundless imagination. Ready to lead teams on epic projects!</p>
+                    </div>
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">12+</span>
+                            <span class="stat-label">Years of Experience</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Completed Projects</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Passion</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section (Homepage) -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title center">My Projects</h2>
+            <p class="section-subtitle">Discover a selection of my work across genres</p>
+            
+            <div class="projects-grid">
+
+                <!-- Project 1: Rikvip (no link) -->
+                <article class="project-card" data-link="">
+                    <div class="project-image">
+                        <img src="images/Rikvip.jpg" alt="Rikvip">
+                        <!-- Không có overlay -->
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Rikvip</h3>
+                        <p class="project-description">The most popular card game portal in Vietnam.</p>
+                        <div class="project-tags">
+                            <span class="tag">Card Game</span>
+                            <span class="tag">Casino</span>
+                            <span class="tag">Gamble</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 2: Fishing Hunter (no link) -->
+                <article class="project-card" data-link="">
+                    <div class="project-image">
+                        <img src="images/project2.jpg" alt="Fishing Hunter">
+                        <!-- Không có overlay -->
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Fishing Hunter</h3>
+                        <p class="project-description">A funny PVP Fishing Game</p>
+                        <div class="project-tags">
+                            <span class="tag">Arcade</span>
+                            <span class="tag">Shooter</span>
+                            <span class="tag">Casino</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 3: Kỳ Thánh (has link) -->
+                <article class="project-card" data-link="https://apps.apple.com/us/app/k%E1%BB%B3-chi%E1%BA%BFn-game-co-tuong-co-up/id1043418329">
+                    <div class="project-image">
+                        <img src="images/KyThanh.jpg" alt="Kỳ Thánh">
+                        <div class="project-overlay">
+                            <a href="https://apps.apple.com/us/app/k%E1%BB%B3-chi%E1%BA%BFn-game-co-tuong-co-up/id1043418329" 
+                               class="btn-view" 
+                               target="_blank" 
+                               rel="noopener">View Project</a>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Kỳ Thánh</h3>
+                        <p class="project-description">Cờ Tướng (Chinese Chess): A Traditional PVP Folk Game</p>
+                        <div class="project-tags">
+                            <span class="tag">Board Game</span>
+                            <span class="tag">Strategy</span>
+                            <span class="tag">Casual</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 4: Merge Beast (has link) -->
+                <article class="project-card" data-link="https://appmagic.rocks/iphone/auto-beast-merge-idle-tycoon-/1523775393">
+                    <div class="project-image">
+                        <img src="images/MergeBeast.jpg" alt="Merge Beast">
+                        <div class="project-overlay">
+                            <a href="https://appmagic.rocks/iphone/auto-beast-merge-idle-tycoon-/1523775393" 
+                               class="btn-view" 
+                               target="_blank" 
+                               rel="noopener">View Project</a>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Merge Beast</h3>
+                        <p class="project-description">Idle RPG: Merge Beasts, Build Armies and Defeat Bosses.</p>
+                        <div class="project-tags">
+                            <span class="tag">Casual</span>
+                            <span class="tag">Merge</span>
+                            <span class="tag">Idle RPG</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 5: Happy Hospital (has link) -->
+                <article class="project-card" data-link="https://play.google.com/store/apps/details?id=com.bonbongame.doctors.care.hospital.kids.games">
+                    <div class="project-image">
+                        <img src="images/HappyHospital.jpg" alt="Happy Hospital">
+                        <div class="project-overlay">
+                            <a href="https://play.google.com/store/apps/details?id=com.bonbongame.doctors.care.hospital.kids.games" 
+                               class="btn-view" 
+                               target="_blank" 
+                               rel="noopener">View Project</a>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Happy Hospital</h3>
+                        <p class="project-description">Fun Simulation Game for Kids – Become a Hero Doctor and Save the Day!</p>
+                        <div class="project-tags">
+                            <span class="tag">Kids Games</span>
+                            <span class="tag">Education</span>
+                            <span class="tag">Simulation</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 6: Idle Cat Adventure (has link) -->
+                <article class="project-card" data-link="https://play.google.com/store/apps/details?gl=US&hl=en-US&id=com.idle.cat.rpg">
+                    <div class="project-image">
+                        <img src="images/CatAdventure.jpg" alt="Idle Cat Adventure">
+                        <div class="project-overlay">
+                            <a href="https://play.google.com/store/apps/details?gl=US&hl=en-US&id=com.idle.cat.rpg" 
+                               class="btn-view" 
+                               target="_blank" 
+                               rel="noopener">View Project</a>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Idle Cat Adventure</h3>
+                        <p class="project-description">Idle RPG: Embark on Adventures, Forge Allies, Conquer Epic Bosses!</p>
+                        <div class="project-tags">
+                            <span class="tag">Hybrid</span>
+                            <span class="tag">Idle RPG</span>
+                            <span class="tag">Strategy</span>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <h2 class="section-title center">Skills</h2>
+            <p class="section-subtitle">My areas of expertise</p>
+            
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon">🎮</div>
+                    <h3 class="skill-title">Game Design</h3>
+                    <p class="skill-description">Game system design, game economy, level design and rapid prototyping</p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">📖</div>
+                    <h3 class="skill-title">Narrative</h3>
+                    <p class="skill-description">Scriptwriting, world building and character development</p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">📊</div>
+                    <h3 class="skill-title">Project Management</h3>
+                    <p class="skill-description">Team coordination, planning and production tracking</p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">🎲</div>
+                    <h3 class="skill-title">Board Games</h3>
+                    <p class="skill-description">Board game design and balancing, game mechanics</p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">🔧</div>
+                    <h3 class="skill-title">Game Systems</h3>
+                    <p class="skill-description">Complex mechanics design, progression and metagame</p>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-icon">💡</div>
+                    <h3 class="skill-title">Innovation</h3>
+                    <p class="skill-description">Researching innovative concepts and creative experimentation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title center">Contact</h2>
+            <p class="section-subtitle">Feel free to reach out to me</p>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <a href="mailto:quannq00590@gmail.com" class="contact-email">quannq00590@gmail.com</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">💼</div>
+                        <div class="contact-details">
+                            <h3>LinkedIn</h3>
+                            <a href="https://www.linkedin.com/in/g%C3%A0-g%C3%B4-225a9b237/" target="_blank">Gà Gô</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">🎮</div>
+                        <div class="contact-details">
+                            <h3>Mobile</h3>
+                            <p>0904594692</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="Your email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" rows="5" placeholder="Your message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Gà Gô. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" aria-label="LinkedIn">LinkedIn</a>
+                <a href="#" aria-label="Twitter">Twitter</a>
+                <a href="#" aria-label="GitHub">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Project Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-body">
+                <h2 id="modalTitle">Project Title</h2>
+                <div class="modal-image">
+                    <img id="modalImage" src="" alt="Project Image">
+                </div>
+                <div class="modal-description">
+                    <p id="modalDescription">Detailed project description...</p>
+                </div>
+                <div class="modal-tags" id="modalTags"></div>
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994c11f1bd780701',t:'MTc2MTUwMzkwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

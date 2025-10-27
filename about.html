@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Resume - Gà Gô's professional experience and education">
+    <title>Resume - Gà Gô</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Gà Gô</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="portfolio.html" class="nav-link">Portfolio</a></li>
+                <li><a href="about.html" class="nav-link active">Resume</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-header resume-header">
+        <div class="container">
+            <div class="resume-header-content">
+                <div class="resume-header-text">
+                    <h1 class="page-title">Gà Gô</h1>
+                    <p class="page-subtitle">Senior Game Designer</p>
+                    <div class="contact-info">
+                        <p>Hà Nội, Việt Nam</p>
+                        <p><a href="mailto:quannq00590@gmail.com">quannq00590@gmail.com</a></p>
+                        <p><a href="https://www.linkedin.com/in/g%C3%A0-g%C3%B4-225a9b237" target="_blank">linkedin.com/in/gà-gô</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="resume-section">
+        <div class="container">
+            <h2 class="section-title">Experience</h2>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3 class="experience-title">Senior Game Designer</h3>
+                    <p class="experience-period">2019 – Present</p>
+                </div>
+                <p class="experience-company">Outsourcing, Sandinh Game / Ohze Studio</p>
+                <ul class="experience-tasks">
+                    <li>Designed and balanced <strong>Card Games, Mid-core, Hybrid, GameFi</strong> titles.</li>
+                    <li>Led monetization strategy for 5+ live service games.</li>
+                    <li>Collaborated with PMs, artists, and developers to ship features on time.</li>
+					<li>Work directly with major domestic and international partners, such as Homa, ABI, Falcon, etc.</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3 class="experience-title">Senior Game Designer</h3>
+                    <p class="experience-period">2014 – 2019</p>
+                </div>
+                <p class="experience-company">Namviet JSC, Bonbon Game</p>
+                <ul class="experience-tasks">
+                    <li>Created <strong>Casino, Casual, and Kids Games</strong> from concept to launch.</li>
+                    <li>Prototyped 10+ mechanics using Unity and internal tools.</li>
+                    <li>Analyzed player data to improve retention and engagement.</li>
+                </ul>
+            </div>
+        
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3 class="experience-title">Junior Game Designer</h3>
+                    <p class="experience-period">2012 – 2014</p>
+                </div>
+                <p class="experience-company">Gameloft, Thudo Multimedia</p>
+                <ul class="experience-tasks">
+                    <li>Supported design for <strong>Casino, Card Games, and Casual</strong> titles.</li>
+                    <li>Created GDDs, flowcharts, and balance spreadsheets.</li>
+                    <li>Participated in daily stand-ups and sprint planning.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="resume-section bg-light">
+        <div class="container">
+            <h2 class="section-title">Education</h2>
+
+            <div class="education-item">
+                <div class="education-icon">Graduation Cap</div>
+                <div class="education-content">
+                    <h3 class="education-title">Bachelor of Software Engineering</h3>
+                    <p class="education-school">FPT University, Hanoi</p>
+                    <p class="education-period">2008 – 2012</p>
+                    <p class="education-description">
+                        Comprehensive program covering algorithms, data structures, software design patterns, and project management.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="resume-download">
+        <div class="container">
+            <a href="files/QuanNQ_CV_GameDesigner.pdf" class="btn btn-primary btn-large" download>
+                Download CV (PDF)
+            </a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Gà Gô. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/g%C3%A0-g%C3%B4-225a9b237" target="_blank" aria-label="LinkedIn">LinkedIn</a>
+                <a href="#" aria-label="Twitter">Twitter</a>
+                <a href="#" aria-label="GitHub">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Mobile menu toggle + auto close
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('navToggle');
+            const menu = document.getElementById('navMenu');
+
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+                menu.classList.toggle('active');
+            });
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    toggle.classList.remove('active');
+                    menu.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

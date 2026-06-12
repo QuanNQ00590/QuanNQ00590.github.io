@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Pokermancer MVP</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#1a1a1a;--bg2:#2a2a2e;--bg3:#0f0f0f;
+  --gold:#ffd700;--green:#44ff88;--red:#ff4466;--orange:#ff8800;--purple:#cc88ff;
+  --white:#fff;--gray:#888;
+  --card-w:clamp(56px,15vw,76px);
+  --card-h:clamp(75px,20vw,102px);
+  --grid-gap:clamp(3px,1vw,6px);
+  --joker-w:clamp(48px,14vw,66px);
+  --joker-h:clamp(72px,21vw,99px);
+}
+html,body{height:100%;overflow:hidden;width:100%}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--white);overscroll-behavior:none;-webkit-text-size-adjust:100%}
+
+.screen{display:none;width:100%;height:100vh;height:100dvh;flex-direction:column;position:absolute;top:0;left:0;overflow:hidden}
+.screen.active{display:flex}
+
+@media(min-width:500px){
+  body{background:#0a0a0a}
+  .screen{max-width:480px;margin:0 auto;border-left:1px solid #222;border-right:1px solid #222}
+}
+
+/* MAIN MENU */
+#mainMenu{justify-content:center;align-items:center;text-align:center}
+#mainMenu h1{font-size:28px;color:var(--gold);margin-bottom:8px;text-shadow:0 0 10px #ffd70066}
+#mainMenu .subtitle{font-size:12px;color:var(--gray);margin-bottom:30px}
+
+/* SETUP / DECK SELECT */
+#setup{padding:20px;overflow-y:auto}
+#setup h2{text-align:center;color:var(--gold);margin-bottom:20px}
+.deck-card{background:var(--bg2);border:1px solid #444;border-radius:8px;padding:12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.deck-card:hover{border-color:var(--gold)}
+.deck-card:active{transform:scale(0.98)}
+.deck-icon{font-size:24px}
+.deck-name{font-size:16px;font-weight:bold;color:var(--white)}
+.deck-desc{font-size:12px;color:var(--gray);margin-top:2px}
+
+/* BATTLE LAYOUT */
+.battle-top{flex-shrink:0;padding:6px 4px 2px;background:var(--bg3);border-bottom:1px solid #333}
+.battle-mid{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:0;padding:2px 4px}
+.battle-bot{flex-shrink:0;padding:6px 4px 10px;background:var(--bg3);border-top:1px solid #333}
+
+/* HUD - Balatro style */
+.hud{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px 4px;font-size:10px}
+.hi{text-align:center;background:var(--bg2);border-radius:6px;padding:4px 2px;border:1px solid #333}
+.hl{font-size:7px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.hv{font-size:14px;font-weight:bold;color:var(--gold);margin-top:1px}
+.hv.sc{color:var(--green)}.hv.tg{color:var(--red)}.hv.gl{color:var(--orange)}
+.pbar{width:100%;height:5px;background:#111;border-radius:3px;overflow:hidden;margin-top:3px;border:1px solid #222}
+.pfill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .5s}
+.rinfo{text-align:center;padding:4px 8px;background:var(--bg2);border-radius:4px;border:1px solid #444;font-size:10px;color:var(--gray);grid-column:1/-1}
+.rinfo span{color:var(--gold);font-weight:bold}
+.ante-dots{margin-left:6px;letter-spacing:2px}
+.adot{font-size:12px}.adot.done{color:var(--green)}.adot.current{color:var(--gold);animation:antePulse 1.5s infinite}.adot.next{color:#333}
+@keyframes antePulse{0%,100%{color:var(--gold)}50%{color:#ffcc44;text-shadow:0 0 4px #ffd700}}
+
+/* Boss banner */
+.bboss{text-align:center;padding:4px 8px;background:#2a0a0a;border:1px solid var(--red);border-radius:6px;animation:bpulse 1.5s infinite;grid-column:1/-1;margin-top:2px}
+@keyframes bpulse{0%,100%{border-color:var(--red);box-shadow:0 0 8px #ff444433}50%{border-color:#ff8888;box-shadow:0 0 16px #ff444466}}
+.bboss h3{color:var(--red);font-size:11px;margin:0}.bboss p{color:#ff8888;font-size:9px;margin:2px 0}
+
+/* Joker bar - Balatro style cards */
+.jbar{display:flex;flex-direction:column;align-items:center;padding:4px 6px 2px;overflow-x:auto;scrollbar-width:none}
+.jbar::-webkit-scrollbar{display:none}
+.jbar-label{font-size:11px;font-weight:bold;color:var(--white);letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+.jbar-row{display:flex;gap:4px;overflow-x:auto;width:100%;justify-content:flex-start;padding-bottom:2px}
+.jcard{width:var(--joker-w);height:var(--joker-h);border-radius:8px;flex-shrink:0;cursor:pointer;position:relative;overflow:hidden;border:2px solid #555;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .1s,border-color .15s}
+.jcard:active{transform:scale(0.95)}
+.jcard:hover{border-color:var(--gold)}
+.jcard-bg{position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,#e8d5a0,#c4a44a,#8b7332);border-radius:6px}
+.jcard-overlay{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;z-index:1}
+.jcard-suit-row{position:absolute;top:2px;left:0;right:0;display:flex;justify-content:center;gap:1px;font-size:7px;color:#333}
+.jcard-icon{font-size:clamp(16px,5vw,24px);position:relative;z-index:1}
+.jcard-name{font-size:7px;font-weight:bold;color:#333;text-align:center;margin-top:2px;line-height:1.1;position:relative;z-index:1}
+.jcard-ef{font-size:6px;color:#553300;text-align:center;margin-top:1px;line-height:1.1;position:relative;z-index:1}
+
+/* Consumable bar */
+.cbar{display:flex;flex-direction:column;align-items:center;padding:4px 6px 2px;overflow-x:auto;scrollbar-width:none;min-height:0}
+.cbar::-webkit-scrollbar{display:none}
+.cbar-label{font-size:10px;font-weight:bold;color:var(--white);letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+.cbar-row{display:flex;gap:4px;overflow-x:auto;width:100%;justify-content:flex-start;padding-bottom:2px;align-items:flex-start}
+.ccard{width:80px;height:110px;border-radius:6px;flex-shrink:0;cursor:pointer;position:relative;overflow:hidden;border:2px solid #555;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .1s,border-color .15s;background:linear-gradient(180deg,#2a1f3d,#1a1028)}
+.ccard:active{transform:scale(0.95)}
+.ccard:hover{border-color:var(--gold)}
+.ccard img{width:100%;max-width:80px;height:auto;display:block}
+.ccard-empty{width:40px!important;height:55px!important;opacity:0.2;border:1px dashed #444!important;border-radius:4px}
+.ccard-name{font-size:9px;color:var(--gold);text-align:center;padding:2px}
+
+/* GRID */
+.gwrap{display:flex;justify-content:center;align-items:center;flex:1;min-height:0;padding:2px 0}
+.grid{display:grid;grid-template-columns:repeat(4,var(--card-w));grid-template-rows:repeat(4,var(--card-h));gap:var(--grid-gap);padding:var(--grid-gap);background:var(--bg2);border-radius:10px;border:2px solid #555;box-shadow:0 4px 16px rgba(0,0,0,.6)}
+.cell{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;transition:transform .08s,box-shadow .08s;position:relative;-webkit-user-select:none;user-select:none;touch-action:manipulation;width:100%;height:100%;overflow:hidden}
+.cc{background:linear-gradient(180deg,#fafafa,#f0f0f0,#e5e5e5);background-color:#fff;border:2px solid #aaa;color:#333;box-shadow:0 2px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.5)}
+.card-face{border:2px solid #aaa;box-shadow:0 2px 8px rgba(0,0,0,.4);overflow:hidden}
+.cc:active{transform:scale(0.94)}.cc:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.5)}
+.cc.sel{border-color:var(--green);box-shadow:0 0 12px var(--green),0 0 24px #44ff8844,0 0 36px #44ff8822;transform:translateY(-3px);z-index:10}
+.cc.suit-HEARTS{color:#e62946}.cc.suit-DIAMONDS{color:#f47e1b}.cc.suit-CLUBS{color:#3978a8}.cc.suit-SPADES{color:#615951}
+.ec{background:var(--bg)!important;border:1px dashed #333!important;cursor:default!important;box-shadow:none!important}
+.frz{border-color:#00ccff!important;background:linear-gradient(180deg,#0a2a3e,#0a1a2e)!important;box-shadow:0 0 6px #00ccff44!important;cursor:not-allowed!important}
+.frz::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,transparent 40%,rgba(0,200,255,.15) 50%,transparent 60%);pointer-events:none;animation:frostShimmer 2s ease-in-out;border-radius:6px}
+@keyframes frostShimmer{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+
+/* Card face cell - sprite fills entire cell, inline styles handle background-image */
+/* Frozen card */
+.frz{background:linear-gradient(180deg,#0a2a3e,#0a1a2e)!important;border-color:#00ccff!important;box-shadow:0 0 6px #00ccff44!important}
+.frozen-overlay{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:6px;pointer-events:none}
+/* Card face - Balatro text (fallback only) */
+.card-corner-tl{position:absolute;top:3px;left:4px;text-align:center;line-height:1.1}
+.card-corner-rank{font-size:clamp(12px,3.2vw,15px);font-weight:700}
+.card-corner-suit{font-size:clamp(10px,2.8vw,12px)}
+.card-center-suit{font-size:clamp(24px,6.5vw,40px)}
+.card-corner-br{position:absolute;bottom:3px;right:4px;text-align:center;line-height:1.1;transform:rotate(180deg)}
+
+/* Enhancement/edition/seal badges */
+.card-enh{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(18px,5vw,28px);font-weight:bold;opacity:0.6;z-index:5;pointer-events:none}
+.card-seal{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;z-index:5;pointer-events:none;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:bold;color:#fff;text-shadow:0 0 2px rgba(0,0,0,.8);border:1px solid rgba(255,255,255,.4);box-shadow:0 1px 3px rgba(0,0,0,.5)}
+.card-edition{position:absolute;bottom:2px;left:2px;font-size:8px;font-weight:bold;z-index:5;pointer-events:none}
+
+/* Evaluation bar */
+.eval-bar{padding:4px 8px;background:var(--bg2);border:1px solid #333;border-radius:6px;margin-top:4px;margin-bottom:3px;font-size:10px;min-height:38px;text-align:center}
+.eval-bar .ev-name{color:var(--purple);font-weight:bold;font-size:13px}
+.eval-bar .ev-score{color:var(--green);font-size:11px;margin-top:1px}
+.eval-bar .ev-path{color:var(--gray);font-size:9px;margin-top:1px}
+
+/* Controls - Balatro style */
+.controls{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
+.btn{padding:10px 18px;border-radius:10px;border:none;font-family:inherit;font-size:12px;font-weight:bold;cursor:pointer;transition:background .1s,transform .05s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.btn:active{transform:scale(0.95)}
+.bp{background:#1a5c2e;color:#fff;border:1px solid #2e8e4e}.bp:hover{background:#237a3e}
+.bs{background:#5c2e1a;color:#fff;border:1px solid #8e4e2e}.bs:hover{background:#7a3e23}
+.bo{background:#5c4a1a;color:#fff;border:1px solid #8e7a2e}.bsm{font-size:10px;padding:6px 10px}
+.bd{background:var(--bg2);color:var(--white);border:1px solid #444}
+
+/* SHOP */
+#shop{padding:10px;overflow-y:auto;background:var(--bg)}
+.shop-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.shop-topbar h2{text-align:center;color:var(--gold);margin:0;font-size:20px}
+.shop-gold{font-size:16px;font-weight:bold;color:var(--orange);background:var(--bg2);padding:4px 10px;border-radius:6px;border:1px solid #444}
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 4px;margin-bottom:12px}
+.shop-card{background:var(--bg2);border:2px solid #555;border-radius:10px;padding:10px;cursor:pointer;transition:transform .1s,border-color .15s;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:140px;position:relative}
+.shop-card:active{transform:scale(0.97)}
+.shop-card:hover{border-color:var(--gold)}
+.sc-c{border-color:#666;background:linear-gradient(180deg,#2a2a2e,#1a1a1e)}
+.sc-u{border-color:#4488ff;background:linear-gradient(180deg,#1a2a4e,#0a1a3e);box-shadow:0 0 8px #4488ff44}
+.sc-r{border-color:#ff4444;background:linear-gradient(180deg,#4e1a1a,#3e0a0a);box-shadow:0 0 8px #ff444444}
+.sc-planet{border-color:#8844ff;background:linear-gradient(180deg,#1a0a2e,#2a1a3e);box-shadow:0 0 8px #8844ff44}
+.sc-enhanced{border-color:#44ff88;background:linear-gradient(180deg,#0a2e1a,#1a3e2a);box-shadow:0 0 8px #44ff8844}
+.sc-head{display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:4px}
+.sc-rarity{font-size:10px;color:var(--gold)}
+.sc-icon-sm{font-size:14px}
+.sc-price{font-size:16px;font-weight:bold;color:var(--gold)}
+.sc-icon{font-size:32px;margin:6px 0}
+.sc-name{font-size:13px;font-weight:bold;color:var(--white);margin-bottom:2px}
+.sc-ef{font-size:10px;color:var(--gray);line-height:1.3;margin-bottom:4px}
+.sc-suits{font-size:11px;color:#555;letter-spacing:3px;margin-top:auto}
+.shop-badge{display:inline-block;padding:1px 4px;border-radius:3px;font-size:9px;color:#000;margin:0 1px;font-weight:bold}
+.shop-empty{text-align:center;color:var(--gray);padding:20px}
+.shop-reroll{text-align:center;margin-top:8px}
+
+/* GAME OVER */
+#gameOver{justify-content:center;align-items:center;text-align:center;padding:20px}
+#gameOver h2{font-size:28px;color:var(--red);margin-bottom:8px}
+.gscore{font-size:36px;color:var(--gold);font-weight:bold}
+.gfloor{font-size:16px;color:var(--white);margin-top:4px}
+.gmsg{font-size:12px;color:var(--gray);margin-top:4px}
+
+/* SCORE OVERLAY */
+#scoreOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;justify-content:center;align-items:center;z-index:100}
+#scoreOverlay.active{display:flex}
+.score-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.score-flash{font-size:40px;font-weight:bold;color:var(--green);animation:flashIn .4s ease-out}
+.score-formula{font-size:18px;color:var(--gold);margin-top:4px}
+.score-total{font-size:50px;color:var(--white);font-weight:bold;margin-top:8px}
+@keyframes flashIn{0%{transform:scale(2);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* SNACK */
+#snack{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .3s;z-index:1000;pointer-events:none;text-align:center}
+.snack-show{opacity:1!important}
+
+/* BLIND SELECT (unused in MVP flow but kept for compatibility) */
+#blindSelect{padding:20px}
+#blindSelect h2{text-align:center;color:var(--gold);margin-bottom:12px}
+#blindContent{display:flex;flex-direction:column;gap:8px}
+.blind-card{background:var(--bg2);border:1px solid #555;border-radius:8px;padding:12px;cursor:pointer;transition:border-color .15s}
+.blind-card:hover{border-color:var(--gold)}
+.blind-title{font-size:16px;font-weight:bold;color:var(--white)}
+.blind-target{font-size:14px;color:var(--green);margin-top:4px}
+.blind-gold{font-size:12px;color:var(--gold)}
+.blind-boss{border-color:var(--red)}
+.blind-boss-name{font-size:12px;color:var(--red);font-weight:bold;margin-top:4px}
+.blind-boss-desc{font-size:10px;color:var(--gray);margin-top:2px}
+.blind-tag{font-size:10px;color:var(--orange);background:#3a2a0a;border:1px solid var(--orange);border-radius:4px;padding:3px 6px;margin-bottom:4px;text-align:center}
+.csel-btn{position:fixed;bottom:80px;right:10px;padding:8px 16px;background:var(--gold);color:#000;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:11px;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.csel-btn:disabled{opacity:0.4;cursor:default}
+.skip-btn{font-size:10px;padding:6px 12px!important;background:#4a1a1a!important;color:var(--red)!important;border:1px solid var(--red)!important}
+
+/* PACK OVERLAY */
+#packOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:12px;padding:20px}
+.pack-title{font-size:22px;font-weight:bold;color:var(--gold);text-align:center}
+.pack-sub{font-size:12px;color:var(--gray);text-align:center;margin-bottom:8px}
+.pack-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:400px}
+.pack-card{width:110px;min-height:155px;border-radius:10px;padding:8px 6px;text-align:center;cursor:pointer;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease,opacity .3s;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;user-select:none}
+.pack-card:active{transform:scale(0.95)}
+.pack-btn{padding:12px 32px;background:var(--gold);color:#000;border:none;border-radius:8px;font-weight:bold;font-size:14px;cursor:pointer;transition:opacity .15s}
+.pack-btn:disabled{opacity:.5;cursor:default}
+
+/* ANIMATION EFFECTS */
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scorePopIn{0%{opacity:0;transform:scale(.5)}60%{transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
+@keyframes xmultPulse{0%{transform:scale(1)}50%{transform:scale(1.1);color:#ff44ff}100%{transform:scale(1)}}
+@keyframes discardShake{0%,100%{transform:rotate(0deg)}10%{transform:rotate(-8deg) scale(1.05)}20%{transform:rotate(8deg) scale(1.05)}30%{transform:rotate(-6deg)}40%{transform:rotate(6deg)}50%{transform:rotate(-4deg)}60%{transform:rotate(4deg)}70%{transform:rotate(-2deg)}80%{transform:rotate(2deg)}90%{transform:rotate(0deg)}}
+@keyframes discardFly{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1}20%{transform:translateY(-20px) rotate(15deg) scale(1.1);opacity:1}100%{transform:translateY(120px) rotate(90deg) scale(0.3);opacity:0}}
+@keyframes cardDrop{0%{transform:translateY(var(--drop-distance,-100px));opacity:0}50%{opacity:1}70%{transform:translateY(5px)}85%{transform:translateY(-2px)}100%{transform:translateY(0);opacity:1}}
+@keyframes cardSlideDown{0%{transform:translateY(var(--slide-from,0))}60%{transform:translateY(3px)}80%{transform:translateY(-1px)}100%{transform:translateY(0)}}
+@keyframes cardFadeIn{0%{transform:translateY(-20px) scale(.8);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes scorePulse{0%{transform:scale(1);box-shadow:0 0 4px #44ff8822}50%{transform:scale(1.08);box-shadow:0 0 16px #44ff8888}100%{transform:scale(1);box-shadow:0 0 12px #44ff8866}}
+@keyframes scoreFloatUp{0%{opacity:1;transform:translate(-50%,-50%)}100%{opacity:0;transform:translate(-50%,-150%)}}
+@keyframes playFly{0%{transform:translateY(0) scale(1);opacity:1}30%{transform:translateY(-15px) scale(1.05);opacity:1}100%{transform:translateY(100px) scale(.3);opacity:0}}
+@keyframes scoreFlash{0%{box-shadow:0 0 0 transparent}50%{box-shadow:0 0 20px #44ff8866,0 0 40px #44ff8833}100%{box-shadow:0 0 0 transparent}}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-50px) scale(1.3)}}
+
+/* CARD SELECT OVERLAY */
+#cardSelectOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:12px;padding:20px}
+#cardSelectOverlay.active{display:flex}
+.csel-title{font-size:20px;font-weight:bold;color:var(--gold);text-align:center}
+.csel-count{font-size:12px;color:var(--gray);text-align:center}
+
+/* ANIMATION CLASSES */
+.cell.is-discarding{animation:discardShake 0.5s ease-in-out forwards;pointer-events:none;z-index:10}
+.cell.is-discarding-fly{animation:discardFly 0.6s ease-in forwards;pointer-events:none;z-index:10}
+.cell.is-sliding{animation:cardSlideDown var(--slide-duration,0.35s) ease-out forwards}
+.cell.is-new-card{animation:cardFadeIn 0.4s ease-out forwards}
+.cell.is-dropping{animation:cardDrop var(--drop-duration,0.5s) cubic-bezier(0.34,1.56,0.64,1) forwards;z-index:5}
+.cell.is-discarded{opacity:0;transform:scale(0.5) rotate(30deg);transition:all 0.3s ease-out;pointer-events:none}
+.cell.is-highlight{animation:scoreFlash 0.6s ease-out}
+.card-scoring{border-color:var(--green)!important;box-shadow:0 0 12px #44ff8866,0 0 24px #44ff8833!important;animation:scorePulse 0.3s ease-out;z-index:20}
+.card-score-float{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--green);font-size:clamp(14px,4vw,20px);font-weight:bold;text-shadow:0 0 8px #44ff8866,0 2px 4px rgba(0,0,0,.8);z-index:25;pointer-events:none;white-space:nowrap;animation:scoreFloatUp 0.8s ease-out forwards}
+.card-play-fly{animation:playFly 0.35s ease-in forwards!important;pointer-events:none;z-index:20!important}
+.float-text{position:absolute;pointer-events:none;font-weight:bold;font-size:16px;z-index:100;animation:floatUp 1s ease-out forwards}
+.anim-hand-name{font-size:clamp(20px,5vw,28px);color:var(--gold);font-weight:bold;margin-bottom:16px;animation:slideInLeft .4s ease-out}
+.anim-line{display:flex;justify-content:space-between;padding:4px 8px;font-size:13px;animation:slideInLeft .3s ease-out;border-bottom:1px solid #222}
+.anim-chips{color:var(--blue)}.anim-chips .anim-val{color:var(--blue)}
+.anim-mult{color:var(--green)}.anim-mult .anim-val{color:var(--green)}
+.anim-xmult{color:#ff88ff}.anim-xmult .anim-val{color:#ff88ff;font-weight:bold}
+.anim-separator{font-size:clamp(16px,4vw,22px);font-weight:bold;color:var(--gold);padding:8px 0;border-top:2px solid var(--gold);border-bottom:2px solid var(--gold);margin:6px 0;animation:fadeIn .3s ease-out}
+.anim-final-score{font-size:clamp(32px,8vw,48px);font-weight:bold;color:var(--green);text-shadow:0 0 20px #44ff8866;animation:scorePopIn .6s ease-out}
+
+/* DECK VIEW */
+.deck-list{display:flex;flex-wrap:wrap;gap:4px;padding:12px;overflow-y:auto;max-height:70vh;justify-content:center}
+.deck-mini{width:clamp(36px,10vw,48px);aspect-ratio:2/3;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:bold;border:1.5px solid #888;background:linear-gradient(180deg,#fafafa,#e8e8e8);cursor:default}
+.deck-mini .dm-rank{font-size:clamp(11px,3vw,14px);line-height:1}
+.deck-mini .dm-suit{font-size:clamp(13px,3.5vw,17px);line-height:1;margin-top:-1px}
+.deck-mini.suit-HEARTS{color:#e62946;border-color:#e62946}
+.deck-mini.suit-DIAMONDS{color:#f47e1b;border-color:#f47e1b}
+.deck-mini.suit-CLUBS{color:#3978a8;border-color:#3978a8}
+.deck-mini.suit-SPADES{color:#615951;border-color:#615951}
+.blind-header{display:flex;justify-content:space-between;align-items:center;padding:16px 16px 8px;flex-wrap:wrap;gap:6px}
+.sbtns{display:flex;gap:8px;justify-content:center;padding:0 16px}
+
+</style>
+</head>
+<body>
+
+<!-- ===== MAIN MENU ===== -->
+<div id="mainMenu" class="screen active">
+  <h1>&#12098; POKERMANCER</h1>
+  <div class="subtitle">Grid-based Poker Roguelike</div>
+  <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+    <button class="btn bp" id="resumeBtn" onclick="G.resumeGame()" style="display:none">&#9654; RESUME</button>
+    <button class="btn bp" onclick="showSetup()">&#128293; NEW RUN</button>
+  </div>
+</div>
+
+<!-- ===== DECK SELECT ===== -->
+<div id="setup" class="screen">
+  <h2>Choose Your Deck</h2>
+  <div id="setupContent"></div>
+  <div style="text-align:center;margin-top:16px">
+    <button class="btn bd" onclick="UI.showScreen('mainMenu')">&#9664; BACK</button>
+  </div>
+</div>
+
+<!-- ===== BATTLE ===== -->
+<div id="battle" class="screen">
+  <div class="battle-top">
+    <div class="hud" id="hud">
+      <div class="hi"><div class="hl">Score</div><div class="hv sc" id="hScore">0</div></div>
+      <div class="hi"><div class="hl">Target</div><div class="hv tg" id="hTarget">300</div></div>
+      <div class="hi"><div class="hl">Gold</div><div class="hv gl" id="hGold">$5</div></div>
+      <div class="hi"><div class="hl">Hands</div><div class="hv" id="hHands">4</div></div>
+      <div class="hi"><div class="hl">Discards</div><div class="hv" id="hDisc">3</div></div>
+      <div class="hi"><div class="hl">Ante</div><div class="hv" id="hAnte">1</div></div>
+      <div class="rinfo" id="roundInfo"></div>
+      <div class="bboss" id="bossBan" style="display:none"><h3 id="bossT"></h3><p id="bossD"></p></div>
+    </div>
+    <div class="eval-bar">
+      <div class="ev-name" id="hName">Select cards to begin</div>
+      <div class="ev-score" id="hSc"></div>
+      <div class="ev-path" id="hBrk"></div>
+    </div>
+    <div class="pbar"><div class="pfill" id="pFill" style="width:0%"></div></div>
+  </div>
+  <div class="jbar" id="jBar"></div>
+  <div class="cbar" id="cBar"></div>
+  <div class="battle-mid">
+    <div class="gwrap">
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+  <div class="battle-bot">
+    <div class="controls">
+      <button class="btn bs" onclick="discardSel()">&#128683; DISCARD</button>
+      <button class="btn bd" onclick="clearSel()">&#10006; CLEAR</button>
+      <button class="btn bp" onclick="placeHand()">&#9654; PLAY HAND</button>
+      <button class="btn bsm" style="background:#2a2a3e;color:var(--gray);border-color:#444" onclick="showDeckView()" title="View remaining deck">&#128214; DECK</button>
+    </div>
+  </div>
+</div>
+
+<div id="deckScreen" class="screen">
+  <div class="blind-header">
+    <h2 id="deckTitle">Remaining Deck</h2>
+    <div id="deckCount" style="color:var(--gray);font-size:12px"></div>
+  </div>
+  <div class="deck-list" id="deckList"></div>
+  <div class="sbtns" style="margin-top:12px">
+    <button class="btn bp bsm" onclick="closeDeckView()">CLOSE</button>
+  </div>
+</div>
+
+<!-- ===== BLIND SELECT ===== -->
+<div id="blindSelect" class="screen">
+  <div style="padding:20px;overflow-y:auto">
+    <h2 style="text-align:center;color:var(--gold);margin-bottom:20px">Select Blind</h2>
+    <div id="blindContent"></div>
+  </div>
+</div>
+
+<!-- ===== SHOP ===== -->
+<div id="shop" class="screen">
+  <div class="shop-topbar"><h2>&#128722; SHOP</h2><div class="shop-gold" id="shopGold">$0</div></div>
+  <div id="shopContent"></div>
+  <div style="text-align:center;margin-top:12px">
+    <button class="btn bp" onclick="endShop()">&#9654; NEXT ROUND</button>
+  </div>
+</div>
+
+<!-- ===== GAME OVER ===== -->
+<div id="gameOver" class="screen">
+  <h2>DEFEAT</h2>
+  <div class="gscore" id="goScore">0</div>
+  <div class="gfloor" id="goFloor">Ante 1</div>
+  <div class="gmsg" id="goMsg"></div>
+  <div style="margin-top:16px;display:flex;gap:8px;justify-content:center">
+    <button class="btn bp" onclick="startNewRun()">&#128260; PLAY AGAIN</button>
+    <button class="btn bd" onclick="UI.showScreen('mainMenu')">&#9776; MENU</button>
+  </div>
+</div>
+
+
+<!-- ===== PACK OVERLAY ===== -->
+<div id="packOverlay"><div class="pack-title" id="packTitle"></div><div class="pack-sub" id="packSub"></div><div class="pack-grid" id="packGrid"></div><button class="pack-btn" id="packBtn" onclick="G.confirmPack()">CONFIRM</button></div>
+<!-- ===== CARD SELECT OVERLAY ===== -->
+<div id="cardSelectOverlay"><div class="csel-title" id="cselTitle"></div><div class="csel-count" id="cselCount"></div><div class="pack-grid" id="cselGrid"></div><div style="margin-top:12px"><button class="pack-btn" id="cselBtn" onclick="G.confirmCardSelect()">CONFIRM</button><button class="btn bd" style="margin-left:8px;padding:10px 18px" onclick="G.cancelCardSelect()">CANCEL</button></div></div>
+<!-- ===== JOKER INFO OVERLAY ===== -->
+<div id="jokerInfoOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);flex-direction:column;align-items:center;justify-content:center;z-index:100;gap:12px;padding:20px">
+  <div id="jokerInfoCard" style="width:200px;height:280px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden">
+    <div style="font-size:14px;font-weight:bold;margin-bottom:6px;text-align:center;padding:0 8px" id="jokerInfoName"></div>
+    <div id="jokerInfoIcon" style="width:120px;height:120px;margin:4px 0"></div>
+    <div style="font-size:11px;color:#ccc;text-align:center;padding:0 12px;margin-top:4px" id="jokerInfoDesc"></div>
+    <div style="font-size:10px;margin-top:4px;opacity:0.6" id="jokerInfoRarity"></div>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:4px">
+    <button class="btn bd" style="padding:10px 24px;font-size:14px" onclick="G.hideJokerInfo()">Close</button>
+    <button class="btn bsm" style="padding:10px 24px;font-size:14px" id="jokerSellBtn" onclick="G.sellJokerFromInfo()">Sell</button>
+  </div>
+</div>
+<!-- ===== SCORE OVERLAY ===== -->
+<div id="scoreOverlay"><div class="score-content"></div></div>
+
+<!-- ===== SNACK ===== -->
+<div id="snack"></div>
+
+<script src="js/data/constants.js"></script>
+<script src="js/data/jokers.js"></script>
+<script src="js/data/tarots.js"></script>
+<script src="js/data/spectrals.js"></script>
+<script src="js/data/vouchers.js"></script>
+<script src="js/data/tags.js"></script>
+<script src="js/game/evaluator.js"></script>
+<script src="js/game/grid.js"></script>
+<script src="js/game/shop.js"></script>
+<script src="js/ui/renderer.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>

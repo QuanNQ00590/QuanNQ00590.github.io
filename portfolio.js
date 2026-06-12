@@ -29,13 +29,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Hover
         item.addEventListener('mouseenter', () => {
-            overlay.style.opacity = '1';
+            if (overlay) overlay.style.opacity = '1';
             item.style.transform = 'translateY(-6px)';
             item.style.boxShadow = '0 12px 24px rgba(0,0,0,0.15)';
         });
 
         item.addEventListener('mouseleave', () => {
-            overlay.style.opacity = '0';
+            if (overlay) overlay.style.opacity = '0';
             item.style.transform = '';
             item.style.boxShadow = '';
         });
@@ -62,14 +62,14 @@ document.addEventListener('DOMContentLoaded', function () {
         applyFilters();
     }));
 
-    search.addEventListener('input', debounce(applyFilters, 300));
-    sort.addEventListener('change', applyFilters);
+    search?.addEventListener('input', debounce(applyFilters, 300));
+    sort?.addEventListener('change', applyFilters);
 
     function applyFilters() {
         const activeFilterBtn = document.querySelector('.filter-btn.active');
         const filter = activeFilterBtn ? activeFilterBtn.getAttribute('data-filter') : 'all';
-        const query = search.value.trim().toLowerCase();
-        const order = sort.value;
+        const query = search?.value.trim().toLowerCase() || '';
+        const order = sort?.value || 'default';
 
         let hasVisible = false;
 
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (shouldShow) hasVisible = true;
         });
 
-        empty.style.display = hasVisible ? 'none' : 'block';
+        if (empty) empty.style.display = hasVisible ? 'none' : 'block';
     }
 
     function debounce(fn, wait) {

@@ -5,14 +5,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     navToggle?.addEventListener('click', () => {
         navToggle.classList.toggle('active');
-        navMenu.classList.toggle('active');
+        navMenu?.classList.toggle('active');
     });
 
     // Close menu when link is clicked
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
+            navToggle?.classList.remove('active');
+            navMenu?.classList.remove('active');
         });
     });
 
@@ -100,4 +100,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // Close modal
     modalClose?.addEventListener('click', () => modal.style.display = 'none');
     window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+    // Static-site contact form fallback.
+    const contactForm = document.getElementById('contactForm');
+    contactForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const recipient = contactForm.dataset.recipient || 'quannq00590@gmail.com';
+        const name = contactForm.querySelector('#name')?.value.trim() || 'Portfolio visitor';
+        const email = contactForm.querySelector('#email')?.value.trim() || '';
+        const message = contactForm.querySelector('#message')?.value.trim() || '';
+        const subject = `Portfolio contact from ${name}`;
+        const body = [`Name: ${name}`, `Email: ${email}`, '', message].join('\n');
+
+        window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
 });

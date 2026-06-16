@@ -725,7 +725,7 @@ const UI = {
     renderRollButton: function() {
         UI.elements.unitSlots.innerHTML = ''; UI.elements.unitSlots.className = 'btn-row single'; 
         let btn = document.createElement('div'); btn.className = 'roll-btn'; btn.onclick = () => LOGIC.rollUnits();
-        btn.innerHTML = `▶ Roll 3 Units (Ads)`; UI.elements.unitSlots.appendChild(btn);
+        btn.innerHTML = `▶ Roll 3 Units to PLAY`; UI.elements.unitSlots.appendChild(btn);
     },
     update: function() {
         UI.elements.stageDisplay.innerHTML = `Stage: ${STATE.stage} <span class="speed-badge">▶▶ x2</span>`;

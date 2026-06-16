@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hex Battle RTS</title>
+    <style>
+        /* ========================================== */
+        /* 1. STYLE / CSS                             */
+        /* ========================================== */
+        :root {
+            --bg-color: #1a1c23;
+            --panel-bg: #2d323e;
+            --text-color: #ffffff;
+            --accent-green: #4ade80;
+            --accent-red: #f87171;
+            --coin-color: #fbbf24;
+            --crown-color: #a855f7;
+            --btn-bg: #374151;
+            --btn-disabled: #1f2937;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+
+        body {
+            background-color: #000; display: flex; justify-content: center; align-items: center;
+            height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden;
+        }
+
+        #game-container {
+            width: 100%; max-width: 480px; height: 100%; background-color: var(--bg-color);
+            display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        /* Top Bar */
+        #top-bar {
+            height: 60px; background-color: var(--panel-bg); display: flex; justify-content: space-between;
+            align-items: center; padding: 0 15px; font-size: 14px; font-weight: bold; color: var(--text-color);
+            border-bottom: 2px solid #222; z-index: 10;
+        }
+        .stage-container { background-color: #111827; padding: 5px 10px; border-radius: 12px; display: flex; align-items: center; gap: 6px; }
+        .speed-badge { background: #059669; color: white; font-size: 10px; padding: 2px 4px; border-radius: 4px; }
+        .resources-group { display: flex; gap: 10px; align-items: center; }
+        .res-item { display: flex; align-items: center; gap: 4px; }
+        .res-item.coin { color: var(--coin-color); }
+        .res-item.crown { color: var(--crown-color); }
+        .icon-circle { width: 16px; height: 16px; border-radius: 50%; border: 1px solid #fff; }
+        .icon-hex { width: 16px; height: 16px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); border: 1px solid #fff; }
+
+        .lab-btn-top {
+            background: linear-gradient(180deg, #6b21a8, #4c1d95); border: 1px solid #a855f7; border-radius: 8px;
+            padding: 5px 10px; color: #fff; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px;
+        }
+        .lab-btn-top:active { transform: scale(0.95); }
+
+        /* Canvas Area */
+        #canvas-container { flex-grow: 1; position: relative; background-color: #000000; overflow: hidden; }
+        canvas { display: block; width: 100%; height: 100%; }
+
+        #message-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px;
+            font-weight: bold; color: #fff; text-shadow: 0 4px 8px rgba(0,0,0,0.5); pointer-events: none;
+            opacity: 0; transition: opacity 0.3s ease; text-align: center; width: 100%; z-index: 20;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85);
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 50; padding: 15px;
+        }
+        .modal-title { font-size: 24px; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; }
+        .modal-title.buff { color: #fbbf24; }
+        .modal-title.lab { color: #a855f7; }
+
+        .tab-buttons { display: flex; width: 100%; gap: 10px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 10px; background: #374151; border: none; color: #9ca3af; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .tab-btn.active { background: #8b5cf6; color: #fff; }
+        
+        .lab-scroll-area {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; max-height: 55vh;
+            overflow-y: auto; padding-right: 5px; margin-bottom: 15px;
+        }
+        .cards-container { display: flex; gap: 10px; width: 100%; margin-bottom: 25px; }
+        
+        .modal-card {
+            background: #1f2937; border: 2px solid #4b5563; border-radius: 10px; padding: 10px;
+            text-align: center; cursor: pointer; transition: transform 0.1s; display: flex; flex-direction: column;
+            align-items: center; justify-content: space-between; min-height: 120px; flex: 1;
+        }
+        .modal-card:active { transform: scale(0.95); }
+        .modal-card.premium { border-color: #a855f7; box-shadow: 0 0 10px rgba(168, 85, 247, 0.3); }
+        .modal-icon { font-size: 22px; margin-bottom: 5px; }
+        .modal-name { font-size: 11px; font-weight: bold; color: #fff; margin-bottom: 2px; }
+        .modal-desc { font-size: 10px; color: #9ca3af; line-height: 1.2; }
+        .modal-badge { margin-top: 6px; font-size: 10px; padding: 3px 6px; border-radius: 6px; font-weight: bold; }
+        .badge-free { background: #059669; color: #fff; }
+        .badge-ads { background: #dc2626; color: #fff; }
+        .badge-crown { background: #9333ea; color: #fff; }
+        .badge-crown.disabled { background: #4b5563; color: #9ca3af; }
+
+        .action-btn {
+            background: linear-gradient(90deg, #16a34a, #059669); border: 2px solid #4ade80; color: #fff; font-size: 16px;
+            font-weight: bold; padding: 10px 24px; border-radius: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);
+        }
+        .action-btn:active { transform: scale(0.95); }
+        .action-btn.close { background: #ef4444; border-color: #f87171; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); margin-top: auto;}
+
+        /* Bottom Bar */
+        #bottom-bar {
+            background-color: var(--panel-bg); padding: 10px; display: flex; flex-direction: column; gap: 10px;
+            border-top: 2px solid #222; z-index: 10; padding-bottom: env(safe-area-inset-bottom, 10px);
+        }
+        .btn-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .btn-row.single { grid-template-columns: 1fr; }
+
+        .upgrade-btn {
+            background-color: var(--btn-bg); border: 2px solid #4b5563; border-radius: 8px; padding: 6px 4px;
+            color: var(--text-color); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .upgrade-btn:active { transform: scale(0.95); }
+        .upgrade-btn:disabled { background-color: var(--btn-disabled); border-color: #374151; color: #6b7280; cursor: not-allowed; transform: none; }
+        
+        .btn-title { font-size: 11px; font-weight: bold; margin-bottom: 2px; text-align: center; text-transform: uppercase; }
+        .btn-stats { font-size: 10px; color: #9ca3af; margin-bottom: 4px; text-align: center; }
+        .btn-cost {
+            font-size: 12px; font-weight: bold; background-color: rgba(0,0,0,0.3); padding: 2px 6px;
+            border-radius: 10px; display: flex; align-items: center; gap: 2px;
+        }
+        .btn-cost.affordable { color: var(--coin-color); }
+        .btn-cost.expensive { color: var(--accent-red); }
+        .unit-icon { font-size: 14px; margin-bottom: 2px; }
+
+        .roll-btn {
+            background: linear-gradient(90deg, #3b82f6, #2563eb); border: 2px solid #60a5fa; color: #fff;
+            padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); text-transform: uppercase;
+        }
+        .roll-btn:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="top-bar">
+        <div class="stage-container" id="stage-display">
+            Stage: 1 <span class="speed-badge">▶▶ x2</span>
+        </div>
+        <div class="resources-group">
+            <div class="res-item coin">
+                <div class="icon-circle" style="background:var(--coin-color)"></div>
+                <span id="coin-display">0</span>
+            </div>
+            <div class="res-item crown">
+                <div class="icon-hex" style="background:var(--crown-color)"></div>
+                <span id="crown-display">0</span>
+            </div>
+            <button class="lab-btn-top" onclick="UI.openLab('attack')">🔬 LAB</button>
+        </div>
+    </div>
+
+    <div id="canvas-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="message-overlay">STAGE CLEARED!</div>
+        
+        <div id="lucky-buff-modal" class="modal-overlay">
+            <div class="modal-title buff">LUCKY BUFF</div>
+            <div class="cards-container" id="buff-cards-container"></div>
+            <button class="action-btn" onclick="LOGIC.claimAllBuffs()">▶ Claim All (Ads)</button>
+        </div>
+
+        <div id="lab-modal" class="modal-overlay">
+            <div class="modal-title lab">LABORATORY</div>
+            <div class="tab-buttons">
+                <button class="tab-btn active" id="tab-attack" onclick="UI.openLab('attack')">ATTACK TECH</button>
+                <button class="tab-btn" id="tab-defend" onclick="UI.openLab('defend')">DEFEND TECH</button>
+            </div>
+            <div class="lab-scroll-area" id="lab-cards-container"></div>
+            <button class="action-btn close" onclick="UI.closeLab()">Close</button>
+        </div>
+    </div>
+
+    <div id="bottom-bar">
+        <!-- Upgrades -->
+        <div class="btn-row">
+            <button class="upgrade-btn" id="btn-dmg" onclick="LOGIC.upgrade('damage')">
+                <div class="btn-title">POWER</div>
+                <div class="btn-stats" id="stat-dmg">Lv.1</div>
+                <div class="btn-cost" id="cost-dmg">4</div>
+            </button>
+            <button class="upgrade-btn" id="btn-hp" onclick="LOGIC.upgrade('maxHp')">
+                <div class="btn-title">MAX HP</div>
+                <div class="btn-stats" id="stat-hp">Lv.1</div>
+                <div class="btn-cost" id="cost-hp">5</div>
+            </button>
+            <button class="upgrade-btn" id="btn-spd" onclick="LOGIC.upgrade('atkSpeed')">
+                <div class="btn-title">ATK SPEED</div>
+                <div class="btn-stats" id="stat-spd">Lv.1</div>
+                <div class="btn-cost" id="cost-spd">6</div>
+            </button>
+        </div>
+        <!-- Unit Slots -->
+        <div class="btn-row" id="unit-slots-container"></div>
+    </div>
+</div>
+
+<script>
+/* ========================================================================= */
+/* 1. GAME DATA & CONSTANTS                                                  */
+/* ========================================================================= */
+const GAME_DATA = {
+    SPEED: 2.0,
+    MAP_PATTERN: [
+        [0, 1, 1, 1, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 2, 2, 1, 2, 2, 1, 1], 
+        [1, 1, 2, 2, 1, 2, 2, 1, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1], [0, 1, 1, 2, 2, 2, 1, 1, 0], [0, 1, 1, 1, 1, 1, 1, 1, 0]  
+    ],
+    UNITS: {
+        warrior: { id: 'warrior', name: 'WARRIOR', icon: '⚔️', color: '#22c55e', type: 'melee', hpMult: 1.0, dmgMult: 1.0, spdMult: 1.0, range: 5 },
+        archer:  { id: 'archer', name: 'ARCHER', icon: '🏹', color: '#0ea5e9', type: 'ranged', hpMult: 0.3, dmgMult: 1.4, spdMult: 0.5, range: 90 },
+        wizard:  { id: 'wizard', name: 'WIZARD', icon: '🔮', color: '#8b5cf6', type: 'aoe', hpMult: 0.6, dmgMult: 2.5, spdMult: 0.3, range: 80, aoeRad: 40 },
+        healer:  { id: 'healer', name: 'HEALER', icon: '❤️', color: '#ec4899', type: 'heal', hpMult: 1.6, dmgMult: 0.2, spdMult: 0.4, range: 120 },
+        tanker:  { id: 'tanker', name: 'TANKER', icon: '🛡️', color: '#eab308', type: 'melee', hpMult: 6.6, dmgMult: 1.0, spdMult: 0.15, range: 5 }
+    },
+    LAB_DB: {
+        attack: [
+            {id: 'dmg', name: 'DMG', icon: '⚔️', upStr: '+5%', val: 0.05},
+            {id: 'aspd', name: 'ATK SPEED', icon: '⚡', upStr: '+1%', val: 0.01},
+            {id: 'critRate', name: 'CRIT RATE', icon: '🎯', upStr: '+0.25%', val: 0.0025},
+            {id: 'critDmg', name: 'CRIT DMG', icon: '💥', upStr: '+2%', val: 0.02},
+            {id: 'mspd', name: 'MOVE SPD', icon: '👟', upStr: '+2%', val: 0.02},
+            {id: 'range', name: 'RANGE', icon: '🏹', upStr: '+2%', val: 0.02},
+            {id: 'projSpd', name: 'PROJ SPD', icon: '☄️', upStr: '+1', val: 1},
+            {id: 'aoeRad', name: 'AOE RAD', icon: '💣', upStr: '+1%', val: 0.01},
+            {id: 'ricochetRate', name: 'RICOCHET %', icon: '↪️', upStr: '+0.2%', val: 0.002},
+            {id: 'ricochetCount', name: 'RICOCHET C.', icon: '🔢', upStr: '+0.1', val: 0.1},
+            {id: 'multiCount', name: 'MULTI C.', icon: '⏬', upStr: '+0.1', val: 0.1},
+            {id: 'multiRate', name: 'MULTI RATE', icon: '🔽', upStr: '+0.1%', val: 0.001}
+        ],
+        defend: [
+            {id: 'hp', name: 'MAX HP', icon: '❤️', upStr: '+5%', val: 0.05},
+            {id: 'hpRegen', name: 'HP REGEN', icon: '💖', upStr: '+0.05%', val: 0.0005},
+            {id: 'dodge', name: 'DODGE %', icon: '💨', upStr: '+0.2%', val: 0.002},
+            {id: 'blockDmg', name: 'BLOCK DMG', icon: '🛡️', upStr: '+1', val: 1},
+            {id: 'kbRate', name: 'KNOCKBACK %', icon: '👊', upStr: '+0.1%', val: 0.001},
+            {id: 'kbForce', name: 'KNOCKBACK F.', icon: '💨', upStr: '+1', val: 1},
+            {id: 'revive', name: 'REVIVE %', icon: '👼', upStr: '+0.1%', val: 0.001},
+            {id: 'maxUnit', name: 'MAX UNIT', icon: '👥', upStr: '+1', val: 1}
+        ]
+    }
+};
+
+/* ========================================================================= */
+/* 2. GAME STATE                                                             */
+/* ========================================================================= */
+const STATE = {
+    coins: 100, 
+    crowns: 100, 
+    stage: 1,
+    isRunning: true,
+    lastTime: 0,
+    stageState: 'WAITING_ROLL', // PLAYING, WAITING_ROLL, CLEARED, FAILED, BUFF
+    sessionUnits: [],
+    hasRolledUnits: false,
+    playerStats: {
+        damage: { level: 1, base: 1, valMult: 1.22, baseCost: 4, costMult: 1.48 },
+        maxHp: { level: 1, base: 3, valMult: 1.18, baseCost: 5, costMult: 1.48 },
+        atkSpeed: { level: 1, base: 0.7, valMult: 1.05, baseCost: 6, costMult: 1.62 },
+        units: {
+            warrior: { count: 0, baseCost: 3, costMult: 1.4 },
+            archer:  { count: 0, baseCost: 15, costMult: 1.5 },
+            wizard:  { count: 0, baseCost: 50, costMult: 1.6 },
+            healer:  { count: 0, baseCost: 30, costMult: 1.5 },
+            tanker:  { count: 0, baseCost: 40, costMult: 1.5 }
+        },
+        maxUnits: 25 
+    },
+    labLevels: {
+        dmg: 0, aspd: 0, critRate: 0, critDmg: 0, mspd: 0, range: 0, projSpd: 0, aoeRad: 0, ricochetRate: 0, ricochetCount: 0, multiCount: 0, multiRate: 0,
+        hp: 0, hpRegen: 0, dodge: 0, blockDmg: 0, kbRate: 0, kbForce: 0, revive: 0, maxUnit: 0
+    },
+    activeBuffs: [],
+    
+    // Arrays
+    playerUnits: [], enemies: [], blocks: [], floatingTexts: [], attackLines: [], emptySpawnCells: []
+};
+
+/* ========================================================================= */
+/* 3. CLASSES                                                                */
+/* ========================================================================= */
+class Entity {
+    constructor(x, y, radius, maxHp, speed) {
+        this.x = x; this.y = y; this.radius = radius;
+        this.maxHp = maxHp; this.hp = maxHp; this.speed = speed;
+        this.vx = 0; this.vy = 0; this.isDead = false;
+    }
+    drawHp(ctx, yOffset) {
+        if (this.hp > 0) {
+            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+            ctx.fillText(Math.ceil(this.hp), this.x, this.y - this.radius - yOffset - 2);
+            if (this.hp < this.maxHp) {
+                const barW = this.radius * 2; const barH = 3; const hpPercent = Math.max(0, this.hp / this.maxHp);
+                ctx.fillStyle = '#ef4444'; ctx.fillRect(this.x - barW/2, this.y - this.radius - yOffset, barW, barH);
+                ctx.fillStyle = '#22c55e'; ctx.fillRect(this.x - barW/2, this.y - this.radius - yOffset, barW * hpPercent, barH);
+            }
+        }
+    }
+}
+
+class Unit extends Entity {
+    constructor(x, y, isPlayer, unitId = 'warrior') {
+        let startHp = isPlayer ? LOGIC.getStatValue('maxHp') : LOGIC.getEnemyStats(STATE.stage).maxHp;
+        let radius = isPlayer ? (unitId === 'tanker' ? 10 : (unitId === 'archer' || unitId === 'wizard' ? 7 : 8)) : 9;
+        
+        if (isPlayer) startHp *= GAME_DATA.UNITS[unitId].hpMult * (1 + STATE.labLevels.hp * 0.05);
+
+        super(x, y, radius, startHp, isPlayer ? (unitId==='tanker'? 40:60) : 40);
+        this.isPlayer = isPlayer; this.unitId = unitId;
+        this.classData = isPlayer ? GAME_DATA.UNITS[unitId] : null;
+        this.target = null; this.attackTimer = 0;
+        
+        if (isPlayer) this.attackRange = this.classData.range * (1 + STATE.labLevels.range * 0.02);
+        else { let eStats = LOGIC.getEnemyStats(STATE.stage); this.damage = eStats.damage; this.atkSpeed = eStats.atkSpeed; this.attackRange = 5; }
+    }
+
+    update(dt) {
+        if (this.isPlayer) {
+            let baseDmg = LOGIC.getStatValue('damage'); let baseSpd = LOGIC.getStatValue('atkSpeed'); let baseMaxHp = LOGIC.getStatValue('maxHp');
+            this.damage = baseDmg * this.classData.dmgMult * (1 + STATE.labLevels.dmg * 0.05);
+            this.atkSpeed = baseSpd * this.classData.spdMult * (1 + STATE.labLevels.aspd * 0.01);
+            this.speed = (this.classData.id === 'tanker' ? 40 : 60) * (1 + STATE.labLevels.mspd * 0.02);
+            this.attackRange = this.classData.range * (1 + STATE.labLevels.range * 0.02);
+            
+            let targetMaxHp = baseMaxHp * this.classData.hpMult * (1 + STATE.labLevels.hp * 0.05);
+            if (this.maxHp !== targetMaxHp) { let hpRatio = this.hp / this.maxHp; this.maxHp = targetMaxHp; this.hp = this.maxHp * hpRatio; }
+            if (STATE.labLevels.hpRegen > 0 && this.hp < this.maxHp) { this.hp = Math.min(this.maxHp, this.hp + this.maxHp * (STATE.labLevels.hpRegen * 0.0005) * dt); }
+        }
+
+        this.attackTimer += dt;
+        for (let b of STATE.blocks) {
+            let dx = this.x - b.x; let dy = this.y - b.y; let dist = Math.hypot(dx, dy); let minDist = this.radius + b.radius * 0.85; 
+            if (dist > 0 && dist < minDist) { let overlap = minDist - dist; this.x += (dx / dist) * overlap; this.y += (dy / dist) * overlap; }
+        }
+
+        if (!this.target || this.target.isDead) this.findTarget();
+
+        if (this.target) {
+            let dx = this.target.x - this.x; let dy = this.target.y - this.y; let dist = Math.hypot(dx, dy);
+            let distToEdge = dist - this.radius - (this.target.radius || 15);
+
+            if (distToEdge > this.attackRange) {
+                this.x += (dx / dist) * this.speed * dt; this.y += (dy / dist) * this.speed * dt;
+            } else {
+                let cooldown = 1 / this.atkSpeed;
+                if (this.attackTimer >= cooldown) { this.attackTimer = 0; this.doAttack(this.target); }
+            }
+        }
+
+        let neighbors = this.isPlayer ? STATE.playerUnits : STATE.enemies;
+        for (let other of neighbors) {
+            if (other !== this) {
+                let dx = this.x - other.x; let dy = this.y - other.y; let dist = Math.hypot(dx, dy);
+                if (dist > 0 && dist < this.radius * 2) { this.x += (dx / dist) * 20 * dt; this.y += (dy / dist) * 20 * dt; }
+            }
+        }
+        this.x = Math.max(this.radius, Math.min(UI.canvas.width - this.radius, this.x));
+        this.y = Math.max(this.radius, Math.min(UI.canvas.height - this.radius, this.y));
+    }
+
+    findTarget() {
+        let bestTarget = null;
+        if (this.isPlayer && this.classData.type === 'heal') {
+            let lowestHpPercent = 1.0;
+            for (let ally of STATE.playerUnits) {
+                if (ally.isDead) continue; let hpPercent = ally.hp / ally.maxHp;
+                if (hpPercent < lowestHpPercent && hpPercent < 0.99) { lowestHpPercent = hpPercent; bestTarget = ally; }
+            }
+            if (!bestTarget && STATE.playerUnits.length > 1) bestTarget = STATE.playerUnits.find(u => u !== this && !u.isDead);
+            this.target = bestTarget; return;
+        }
+
+        let shortestDist = Infinity; let possibleTargets = this.isPlayer ? STATE.enemies.concat(STATE.blocks) : STATE.playerUnits;
+        for (let t of possibleTargets) {
+            if (t.isDead) continue;
+            let edgeDist = Math.hypot(this.x - t.x, this.y - t.y) - (t.radius || 15);
+            if (this.isPlayer && t instanceof Enemy) edgeDist -= 20; 
+            if (edgeDist < shortestDist) { shortestDist = edgeDist; bestTarget = t; }
+        }
+        this.target = bestTarget;
+    }
+
+    doAttack(target) {
+        let angle = Math.atan2(target.y - this.y, target.x - this.x);
+        
+        if (this.isPlayer && this.classData.type === 'heal') {
+            if (target.hp >= target.maxHp) { this.target = null; return; }
+            STATE.attackLines.push({ x1: this.x, y1: this.y, x2: target.x, y2: target.y, life: 0.15, color: '#ec4899' });
+            let healAmt = this.damage * 6; target.hp = Math.min(target.maxHp, target.hp + healAmt);
+            STATE.floatingTexts.push(new FloatingText(target.x, target.y - 15, `+${healAmt.toFixed(1)}`, '#22c55e'));
+            this.target = null; return;
+        }
+
+        let finalDmg = this.damage; let isCrit = false;
+
+        if (this.isPlayer) {
+            if (Math.random() < STATE.labLevels.critRate * 0.0025) { isCrit = true; finalDmg *= (1 + STATE.labLevels.critDmg * 0.02); }
+            if (STATE.labLevels.multiCount > 0 && Math.random() < STATE.labLevels.multiRate * 0.001) { finalDmg *= (1 + STATE.labLevels.multiCount * 0.1); }
+        } else {
+            if (target.isPlayer) {
+                let dodgeChance = Math.min(0.8, STATE.labLevels.dodge * 0.002); 
+                // FIX: Show "DODGE" instead of "MISS"
+                if (Math.random() < dodgeChance) { STATE.floatingTexts.push(new FloatingText(target.x, target.y - 15, `DODGE`, '#9ca3af')); return; }
+                finalDmg = Math.max(1, finalDmg - STATE.labLevels.blockDmg);
+                if (STATE.labLevels.kbRate > 0 && Math.random() < STATE.labLevels.kbRate * 0.001) {
+                    this.x -= Math.cos(angle) * (10 + STATE.labLevels.kbForce); this.y -= Math.sin(angle) * (10 + STATE.labLevels.kbForce);
+                }
+            }
+        }
+
+        if (this.isPlayer && this.classData.type === 'aoe') {
+            let actualAoeRad = this.classData.aoeRad * (1 + STATE.labLevels.aoeRad * 0.01);
+            STATE.attackLines.push({ x1: this.x, y1: this.y, x2: target.x, y2: target.y, life: 0.1, color: '#8b5cf6' });
+            STATE.attackLines.push({ type: 'circle', x: target.x, y: target.y, r: actualAoeRad, life: 0.2, color: 'rgba(139, 92, 246, 0.3)' });
+
+            let hitGold = 0; let hitCrown = 0;
+            STATE.enemies.concat(STATE.blocks).forEach(e => {
+                if (!e.isDead && Math.hypot(e.x - target.x, e.y - target.y) <= actualAoeRad + (e.radius || 15)) {
+                    let effDmg = Math.min(e.hp, finalDmg); e.hp -= finalDmg;
+                    hitGold += Math.max(1, Math.ceil(effDmg * 2.5)); hitCrown += Math.max(1, Math.ceil(effDmg * 0.5));
+                    STATE.floatingTexts.push(new FloatingText(e.x, e.y - 15, isCrit ? `${finalDmg.toFixed(1)}!` : `-${finalDmg.toFixed(1)}`, isCrit ? '#facc15' : '#fff', isCrit));
+                    if (e.hp <= 0) LOGIC.checkDeath(e);
+                }
+            });
+            if(hitGold>0) LOGIC.addCoins(hitGold); if(hitCrown>0 && Math.random() > 0.5) LOGIC.addCrowns(hitCrown);
+            this.target = null; return;
+        }
+
+        if (this.isPlayer && this.classData.type === 'ranged') {
+            STATE.attackLines.push({ x1: this.x + Math.cos(angle)*this.radius, y1: this.y + Math.sin(angle)*this.radius, x2: target.x, y2: target.y, life: 0.15, color: '#38bdf8' });
+        } else {
+            let startX = this.x + Math.cos(angle - 0.5) * (this.radius + 5); let startY = this.y + Math.sin(angle - 0.5) * (this.radius + 5);
+            let endX = this.x + Math.cos(angle + 0.5) * (this.radius + 15); let endY = this.y + Math.sin(angle + 0.5) * (this.radius + 15);
+            STATE.attackLines.push({ x1: startX, y1: startY, x2: endX, y2: endY, life: 0.15, color: '#facc15' });
+        }
+
+        let effectiveDmg = Math.min(target.hp, finalDmg); target.hp -= finalDmg;
+        // FIX: Only give rewards if actual damage was dealt
+        if (this.isPlayer && effectiveDmg > 0) {
+            let hitGold = Math.max(1, Math.ceil(effectiveDmg * 2.5)); let hitCrown = Math.max(1, Math.ceil(effectiveDmg * 0.5));
+            LOGIC.addCoins(hitGold); if(Math.random() > 0.5) LOGIC.addCrowns(hitCrown);
+            STATE.floatingTexts.push(new FloatingText(target.x, target.y - 15, isCrit ? `${finalDmg.toFixed(1)}!` : `-${finalDmg.toFixed(1)}`, isCrit ? '#facc15' : '#fff', isCrit));
+            STATE.floatingTexts.push(new FloatingText(target.x + 12, target.y - 25, `+${hitGold}`, '#fbbf24'));
+        } else {
+            STATE.floatingTexts.push(new FloatingText(target.x, target.y - 15, `-${finalDmg.toFixed(1)}`, '#f87171'));
+        }
+
+        if (target.hp <= 0) { LOGIC.checkDeath(target); this.target = null; }
+    }
+
+    draw(ctx) {
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+            let a = Math.PI / 180 * (60 * i - 30); 
+            let hx = this.x + this.radius * Math.cos(a); let hy = this.y + this.radius * Math.sin(a);
+            if (i === 0) ctx.moveTo(hx, hy); else ctx.lineTo(hx, hy);
+        }
+        ctx.closePath();
+        ctx.fillStyle = this.isPlayer ? this.classData.color : '#ef4444'; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+
+        ctx.save(); ctx.translate(this.x, this.y);
+        if (this.isPlayer) {
+            if (this.classData.id === 'archer') {
+                ctx.rotate(-Math.PI / 4); ctx.beginPath(); ctx.arc(0, 0, this.radius + 3, -Math.PI/2, Math.PI/2); ctx.strokeStyle = '#78350f'; ctx.lineWidth = 2; ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, -(this.radius + 3)); ctx.lineTo(0, (this.radius + 3)); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
+            } else if (this.classData.id === 'wizard') {
+                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(this.radius + 6, -this.radius - 6); ctx.strokeStyle = '#78350f'; ctx.lineWidth = 2; ctx.stroke();
+                ctx.beginPath(); ctx.arc(this.radius + 6, -this.radius - 6, 3, 0, Math.PI*2); ctx.fillStyle = '#c084fc'; ctx.fill();
+            } else if (this.classData.id === 'healer') {
+                ctx.fillStyle = '#fff'; ctx.fillRect(-1, -this.radius - 6, 2, 8); ctx.fillRect(-4, -this.radius - 3, 8, 2);
+            } else if (this.classData.id === 'tanker') {
+                ctx.beginPath(); ctx.rect(-this.radius - 2, -4, 4, 8); ctx.fillStyle = '#94a3b8'; ctx.fill(); ctx.stroke();
+            } else {
+                ctx.rotate(-Math.PI / 4); let hiltBase = this.radius * 0.5;
+                ctx.beginPath(); ctx.moveTo(hiltBase + 2, 0); ctx.lineTo(hiltBase + this.radius * 1.5, 0); ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(hiltBase + 2, -4); ctx.lineTo(hiltBase + 2, 4); ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(hiltBase - 3, 0); ctx.lineTo(hiltBase + 1, 0); ctx.strokeStyle = '#78350f'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.stroke();
+            }
+        } else {
+            ctx.rotate(-Math.PI / 4); let hiltBase = this.radius * 0.5;
+            ctx.beginPath(); ctx.moveTo(hiltBase + 2, 0); ctx.lineTo(hiltBase + this.radius * 1.5, 0); ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.stroke();
+        }
+        ctx.restore(); this.drawHp(ctx, 8);
+    }
+}
+
+class Enemy extends Unit { constructor(x, y) { super(x, y, false); } }
+class Block extends Entity {
+    // FIX: Better HP scaling (8 base, 1.15 multiplier)
+    constructor(x, y, radius = 15) { super(x, y, radius, 8 * Math.pow(1.15, STATE.stage - 1), 0); }
+    draw(ctx) {
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+            let a = Math.PI / 180 * (60 * i - 30); 
+            let hx = this.x + this.radius * Math.cos(a); let hy = this.y + this.radius * Math.sin(a);
+            if (i === 0) ctx.moveTo(hx, hy); else ctx.lineTo(hx, hy);
+        }
+        ctx.closePath();
+        ctx.fillStyle = '#f59e0b'; ctx.fill(); ctx.strokeStyle = '#fcd34d'; ctx.lineWidth = 2; ctx.stroke();
+        if (this.hp > 0) { ctx.fillStyle = '#fff'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(Math.ceil(this.hp), this.x, this.y); }
+    }
+}
+
+class FloatingText {
+    constructor(x, y, text, color, isLarge = false) {
+        this.x = x + (Math.random() * 20 - 10); this.y = y; this.text = text; this.color = color; 
+        this.life = 0.8; this.vy = -40; this.isLarge = isLarge;
+    }
+    update(dt) { this.y += this.vy * dt; this.life -= dt; }
+    draw(ctx) {
+        ctx.globalAlpha = Math.max(0, this.life); ctx.fillStyle = this.color; 
+        ctx.font = this.isLarge ? 'bold 18px sans-serif' : 'bold 14px sans-serif'; 
+        ctx.textAlign = 'center'; ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 2; 
+        ctx.strokeText(this.text, this.x, this.y); ctx.fillText(this.text, this.x, this.y); ctx.globalAlpha = 1.0;
+    }
+}
+
+/* ========================================================================= */
+/* 4. GAME LOGIC                                                             */
+/* ========================================================================= */
+const LOGIC = {
+    getLabCost: function(level) { return Math.floor(10 * Math.pow(1.5, level)); },
+    getMaxUnits: function() { return STATE.playerStats.maxUnits + Math.floor(STATE.labLevels.maxUnit * 1); },
+    getTotalUnits: function() { return Object.values(STATE.playerStats.units).reduce((sum, u) => sum + u.count, 0); },
+    getStatValue: function(type) {
+        let stat = STATE.playerStats[type]; let baseVal = stat.base * Math.pow(stat.valMult, stat.level - 1);
+        if (type === 'damage') return baseVal; if (type === 'maxHp') return baseVal; return baseVal;
+    },
+    getUpgradeCost: function(type) {
+        let stat = STATE.playerStats[type]; return Math.floor(stat.baseCost * Math.pow(stat.costMult, stat.level - 1));
+    },
+    getUnitCost: function(unitId) {
+        let u = STATE.playerStats.units[unitId]; return Math.floor(u.baseCost * Math.pow(u.costMult, u.count));
+    },
+    getEnemyStats: function(stage) {
+        let hp = 3; let dmg = 1;
+        for(let i = 2; i <= stage; i++) {
+            if (i <= 5) { hp *= 1.3; dmg *= 1.3; } else if (i <= 10) { hp *= 1.2; dmg *= 1.2; } else { hp *= 1.08; dmg *= 1.08; }
+        }
+        return { maxHp: hp, damage: dmg, atkSpeed: 0.7 };
+    },
+    addCoins: function(amount) { STATE.coins += amount; UI.elements.coinDisplay.innerText = Math.floor(STATE.coins); UI.update(); },
+    addCrowns: function(amount) { STATE.crowns += amount; UI.elements.crownDisplay.innerText = Math.floor(STATE.crowns); UI.update(); },
+    upgrade: function(type) {
+        let cost = LOGIC.getUpgradeCost(type);
+        if (STATE.coins >= cost) { STATE.coins -= cost; LOGIC.forceUpgradeStat(type); }
+    },
+    forceUpgradeStat: function(type) {
+        STATE.playerStats[type].level++;
+        if (type === 'maxHp') {
+            STATE.playerUnits.forEach(u => { let hpRatio = u.hp / u.maxHp; u.maxHp = LOGIC.getStatValue('maxHp') * u.classData.hpMult * (1 + STATE.labLevels.hp * 0.05); u.hp = u.maxHp * hpRatio; });
+        }
+        UI.update();
+    },
+    spawnPlayerUnit: function(type) {
+        if (LOGIC.getTotalUnits() >= LOGIC.getMaxUnits()) return;
+        let cost = LOGIC.getUnitCost(type);
+        if (STATE.coins >= cost) { STATE.coins -= cost; LOGIC.forceSpawnUnit(type); }
+    },
+    forceSpawnUnit: function(type = 'warrior') {
+        if (LOGIC.getTotalUnits() >= LOGIC.getMaxUnits()) return;
+        let cx = UI.canvas.width / 2; let spawnX = cx + (Math.random() * 200 - 100); let spawnY = UI.canvas.height - 40 - (Math.random() * 40); 
+        STATE.playerUnits.push(new Unit(spawnX, spawnY, true, type));
+        STATE.playerStats.units[type].count++;
+        UI.elements.coinDisplay.innerText = Math.floor(STATE.coins); UI.update();
+    },
+    buyLab: function(statKey) {
+        let cost = LOGIC.getLabCost(STATE.labLevels[statKey]);
+        if (STATE.crowns >= cost) { 
+            STATE.crowns -= cost; STATE.labLevels[statKey]++; UI.elements.crownDisplay.innerText = Math.floor(STATE.crowns); 
+            let activeTab = document.getElementById('tab-attack').classList.contains('active') ? 'attack' : 'defend';
+            UI.openLab(activeTab); STATE.playerUnits.forEach(u => u.update(0));
+        }
+    },
+    triggerLuckyBuff: function() {
+        STATE.stageState = 'BUFF';
+        const allBuffs = [
+            { id: 'gold', name: 'Gold Stash', icon: '💰', desc: `+${STATE.stage * 150} Coins`, action: () => LOGIC.addCoins(STATE.stage * 150) },
+            { id: 'crown', name: 'Crown Stash', icon: '👑', desc: `+${STATE.stage * 50} Crowns`, action: () => LOGIC.addCrowns(STATE.stage * 50) },
+            { id: 'dmg', name: 'Power Buff', icon: '⚔️', desc: 'Free +1 Lv Power', action: () => LOGIC.forceUpgradeStat('damage') },
+            { id: 'hp', name: 'Health Buff', icon: '❤️', desc: 'Free +1 Lv Max HP', action: () => LOGIC.forceUpgradeStat('maxHp') },
+            { id: 'spd', name: 'Speed Buff', icon: '⚡', desc: 'Free +1 Lv Atk Speed', action: () => LOGIC.forceUpgradeStat('atkSpeed') }
+        ];
+        let shuffled = allBuffs.sort(() => 0.5 - Math.random());
+        STATE.activeBuffs = [ { ...shuffled[0], isPremium: false }, { ...shuffled[1], isPremium: false }, { ...shuffled[2], isPremium: true } ];
+        
+        UI.elements.buffCards.innerHTML = '';
+        STATE.activeBuffs.forEach((buff, index) => {
+            const card = document.createElement('div'); card.className = `modal-card ${buff.isPremium ? 'premium' : ''}`;
+            card.onclick = () => {
+                if (buff.isPremium) { UI.elements.buffCards.style.opacity = '0.5'; setTimeout(() => { buff.action(); LOGIC.closeLuckyBuff(); }, 1000); } 
+                else { buff.action(); LOGIC.closeLuckyBuff(); }
+            };
+            card.innerHTML = `
+                <div><div class="modal-icon">${buff.icon}</div><div class="modal-name">${buff.name}</div><div class="modal-desc">${buff.desc}</div></div>
+                <div class="modal-badge ${buff.isPremium ? 'badge-ads' : 'badge-free'}">${buff.isPremium ? '▶ ADS' : 'FREE'}</div>
+            `;
+            UI.elements.buffCards.appendChild(card);
+        });
+        document.getElementById('lucky-buff-modal').style.display = 'flex';
+    },
+    claimAllBuffs: function() {
+        UI.elements.buffCards.style.opacity = '0.5';
+        setTimeout(() => { STATE.activeBuffs.forEach(b => b.action()); LOGIC.closeLuckyBuff(); }, 1000);
+    },
+    closeLuckyBuff: function() {
+        document.getElementById('lucky-buff-modal').style.display = 'none'; UI.elements.buffCards.style.opacity = '1'; LOGIC.initStage();
+    },
+    checkDeath: function(entity) {
+        if (entity.isPlayer && Math.random() < Math.min(0.8, STATE.labLevels.revive * 0.001)) {
+            entity.hp = entity.maxHp; STATE.floatingTexts.push(new FloatingText(entity.x, entity.y - 20, `REVIVE`, '#4ade80'));
+        } else { entity.isDead = true; }
+    },
+    initStage: function(isFirstTime = false) {
+        STATE.enemies = []; STATE.blocks = [];
+        let cx = UI.canvas.width / 2; let gridR = 20; let hexW = Math.sqrt(3) * gridR; let hexH = 2 * gridR;            
+        let xOffset = hexW; let yOffset = hexH * 0.75; let startY = 60; let startX = cx - (9 * hexW) / 2 + hexW / 2;
+
+        for (let r = 0; r < GAME_DATA.MAP_PATTERN.length; r++) {
+            for (let c = 0; c < GAME_DATA.MAP_PATTERN[r].length; c++) {
+                let cell = GAME_DATA.MAP_PATTERN[r][c];
+                let bx = startX + c * xOffset + (r % 2 === 1 ? xOffset / 2 : 0); let by = startY + r * yOffset;
+
+                if (cell === 1) { STATE.blocks.push(new Block(bx, by, gridR - 1.5)); } 
+                else if (cell === 2) {
+                    let enemiesPerHole = Math.max(1, Math.ceil(STATE.stage / 2));
+                    for(let i=0; i<enemiesPerHole; i++) { STATE.enemies.push(new Enemy(bx + Math.random()*10-5, by + Math.random()*10-5)); }
+                }
+            }
+        }
+
+        if (isFirstTime) {
+            STATE.stageState = 'WAITING_ROLL';
+        } else {
+            STATE.stageState = 'PLAYING';
+        }
+
+        UI.elements.msgOverlay.style.opacity = '0'; UI.update();
+        let spawnCx = UI.canvas.width / 2;
+        STATE.playerUnits.forEach((u) => {
+            u.hp = Math.min(u.maxHp, u.hp + (u.maxHp * 0.5)); 
+            u.x = spawnCx + (Math.random() * 200 - 100); u.y = UI.canvas.height - 40 - (Math.random() * 40); u.target = null;
+        });
+    },
+    checkWinLoss: function() {
+        if (STATE.stageState !== 'PLAYING') return;
+        STATE.playerUnits = STATE.playerUnits.filter(u => !u.isDead); STATE.enemies = STATE.enemies.filter(e => !e.isDead); STATE.blocks = STATE.blocks.filter(b => !b.isDead);
+        Object.keys(STATE.playerStats.units).forEach(type => { STATE.playerStats.units[type].count = STATE.playerUnits.filter(u => u.unitId === type).length; });
+        UI.update();
+
+        if (STATE.enemies.length === 0 && STATE.blocks.length === 0) {
+            STATE.stageState = 'CLEARED'; UI.elements.msgOverlay.innerText = "STAGE CLEARED!"; UI.elements.msgOverlay.style.color = "#4ade80"; UI.elements.msgOverlay.style.opacity = '1';
+            setTimeout(() => { STATE.stage++; if (STATE.stage % 4 === 2) LOGIC.triggerLuckyBuff(); else LOGIC.initStage(); }, 2000);
+        }
+        else if (STATE.playerUnits.length === 0 && LOGIC.getTotalUnits() === 0 && STATE.hasRolledUnits) {
+            let minCost = Math.min(...STATE.sessionUnits.map(id => LOGIC.getUnitCost(id))); if (STATE.coins < minCost) LOGIC.addCoins(minCost);
+            STATE.stageState = 'FAILED'; UI.elements.msgOverlay.innerText = "WIPED OUT!"; UI.elements.msgOverlay.style.color = "#f87171"; UI.elements.msgOverlay.style.opacity = '1';
+            setTimeout(() => { LOGIC.initStage(); }, 2000);
+        }
+    },
+    updateEngine: function(dt) {
+        if (STATE.stageState === 'PLAYING') { STATE.playerUnits.forEach(u => u.update(dt)); STATE.enemies.forEach(e => e.update(dt)); LOGIC.checkWinLoss(); }
+        STATE.floatingTexts.forEach(ft => ft.update(dt)); STATE.floatingTexts = STATE.floatingTexts.filter(ft => ft.life > 0);
+        STATE.attackLines.forEach(al => al.life -= dt); STATE.attackLines = STATE.attackLines.filter(al => al.life > 0);
+    },
+    rollUnits: function() {
+        UI.elements.unitSlots.style.opacity = '0.5';
+        setTimeout(() => { 
+            STATE.hasRolledUnits = true; 
+            let allClasses = Object.keys(GAME_DATA.UNITS); 
+            allClasses.sort(() => 0.5 - Math.random());
+            STATE.sessionUnits = allClasses.slice(0, 3);
+            UI.renderUnitButtons(); 
+            UI.elements.unitSlots.style.opacity = '1'; 
+            LOGIC.forceSpawnUnit(STATE.sessionUnits[0]); // Give 1st unit free
+            STATE.stageState = 'PLAYING'; // Start battle after rolling
+        }, 500);
+    }
+};
+
+/* ========================================================================= */
+/* 5. UI & RENDERING                                                         */
+/* ========================================================================= */
+const UI = {
+    canvas: document.getElementById('gameCanvas'),
+    ctx: document.getElementById('gameCanvas').getContext('2d'),
+    elements: {
+        coinDisplay: document.getElementById('coin-display'), crownDisplay: document.getElementById('crown-display'),
+        stageDisplay: document.getElementById('stage-display'), msgOverlay: document.getElementById('message-overlay'),
+        unitSlots: document.getElementById('unit-slots-container'), buffCards: document.getElementById('buff-cards-container'),
+        labCards: document.getElementById('lab-cards-container'), labModal: document.getElementById('lab-modal')
+    },
+    resize: function() { UI.canvas.width = document.getElementById('canvas-container').clientWidth; UI.canvas.height = document.getElementById('canvas-container').clientHeight; },
+    openLab: function(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+        UI.elements.labCards.innerHTML = '';
+        const labOptions = GAME_DATA.LAB_DB[tabName];
+        labOptions.forEach((opt) => {
+            const card = document.createElement('div');
+            let cost = LOGIC.getLabCost(STATE.labLevels[opt.id]); let canAfford = STATE.crowns >= cost;
+            card.className = `modal-card ${canAfford ? 'premium' : ''}`; card.onclick = () => { if(canAfford) LOGIC.buyLab(opt.id); };
+            card.innerHTML = `<div><div class="modal-icon">${opt.icon}</div><div class="modal-name">${opt.name}</div><div class="modal-desc">Up/Lv: ${opt.upStr}<br>(Lv.${STATE.labLevels[opt.id]})</div></div><div class="modal-badge badge-crown ${!canAfford ? 'disabled' : ''}">👑 ${cost}</div>`;
+            UI.elements.labCards.appendChild(card);
+        });
+        UI.elements.labModal.style.display = 'flex';
+    },
+    closeLab: function() { UI.elements.labModal.style.display = 'none'; UI.update(); },
+    renderUnitButtons: function() {
+        UI.elements.unitSlots.innerHTML = ''; UI.elements.unitSlots.className = 'btn-row'; 
+        STATE.sessionUnits.forEach(uId => {
+            let uData = GAME_DATA.UNITS[uId]; let btn = document.createElement('button'); btn.className = 'upgrade-btn'; btn.id = `btn-unit-${uId}`; btn.onclick = () => LOGIC.spawnPlayerUnit(uId);
+            btn.innerHTML = `<div class="unit-icon">${uData.icon}</div><div class="btn-title" style="color:${uData.color}">${uData.name}</div><div class="btn-stats" id="stat-unit-${uId}">0</div><div class="btn-cost" id="cost-unit-${uId}">0</div>`;
+            UI.elements.unitSlots.appendChild(btn);
+        });
+        UI.update(); 
+    },
+    renderRollButton: function() {
+        UI.elements.unitSlots.innerHTML = ''; UI.elements.unitSlots.className = 'btn-row single'; 
+        let btn = document.createElement('div'); btn.className = 'roll-btn'; btn.onclick = () => LOGIC.rollUnits();
+        btn.innerHTML = `▶ Roll 3 Units (Ads)`; UI.elements.unitSlots.appendChild(btn);
+    },
+    update: function() {
+        UI.elements.stageDisplay.innerHTML = `Stage: ${STATE.stage} <span class="speed-badge">▶▶ x2</span>`;
+        const types = [ { id: 'dmg', type: 'damage', fmt: v => v.toFixed(1) }, { id: 'hp', type: 'maxHp', fmt: v => Math.floor(v) }, { id: 'spd', type: 'atkSpeed', fmt: v => v.toFixed(2) } ];
+        types.forEach(t => {
+            let val = LOGIC.getStatValue(t.type); document.getElementById(`stat-${t.id}`).innerText = `Lv.${STATE.playerStats[t.type].level}`;
+            let cost = LOGIC.getUpgradeCost(t.type); let btn = document.getElementById(`btn-${t.id}`); let costEl = document.getElementById(`cost-${t.id}`); costEl.innerText = cost;
+            if (STATE.coins >= cost) { btn.disabled = false; costEl.className = 'btn-cost affordable'; } else { btn.disabled = true; costEl.className = 'btn-cost expensive'; }
+        });
+        if (STATE.hasRolledUnits) {
+            let total = LOGIC.getTotalUnits(); let currentMax = LOGIC.getMaxUnits();
+            STATE.sessionUnits.forEach(uId => {
+                let uCost = LOGIC.getUnitCost(uId); let statEl = document.getElementById(`stat-unit-${uId}`); if(statEl) statEl.innerText = `${STATE.playerStats.units[uId].count} / ${currentMax - total}`;
+                let btn = document.getElementById(`btn-unit-${uId}`); let costEl = document.getElementById(`cost-unit-${uId}`); if(costEl) costEl.innerText = uCost;
+                if (btn) {
+                    if (total >= currentMax) { btn.disabled = true; costEl.innerText = "MAX"; costEl.className = 'btn-cost'; } 
+                    else if (STATE.coins >= uCost) { btn.disabled = false; costEl.className = 'btn-cost affordable'; } 
+                    else { btn.disabled = true; costEl.className = 'btn-cost expensive'; }
+                }
+            });
+        }
+    },
+    drawEngine: function() {
+        UI.ctx.clearRect(0, 0, UI.canvas.width, UI.canvas.height);
+        STATE.blocks.forEach(b => b.draw(UI.ctx)); STATE.enemies.forEach(e => e.draw(UI.ctx)); STATE.playerUnits.forEach(u => u.draw(UI.ctx));
+        STATE.attackLines.forEach(al => {
+            if (al.type === 'circle') { UI.ctx.beginPath(); UI.ctx.arc(al.x, al.y, al.r, 0, Math.PI*2); UI.ctx.fillStyle = al.color; UI.ctx.fill(); } 
+            else { UI.ctx.beginPath(); UI.ctx.moveTo(al.x1, al.y1); UI.ctx.lineTo(al.x2, al.y2); UI.ctx.strokeStyle = al.color; UI.ctx.lineWidth = 3; UI.ctx.lineCap = 'round'; UI.ctx.globalAlpha = Math.max(0, al.life / 0.15); UI.ctx.stroke(); UI.ctx.globalAlpha = 1.0; }
+        });
+        STATE.floatingTexts.forEach(ft => ft.draw(UI.ctx));
+    }
+};
+
+/* ========================================================================= */
+/* 6. GAME LOOP                                                              */
+/* ========================================================================= */
+function gameLoop(timestamp) {
+    let dt = (timestamp - STATE.lastTime) / 1000; if (dt > 0.1) dt = 0.1; STATE.lastTime = timestamp;
+    LOGIC.updateEngine(dt * GAME_DATA.SPEED);
+    UI.drawEngine();
+    requestAnimationFrame(gameLoop);
+}
+
+function initGame() {
+    window.addEventListener('resize', UI.resize); UI.resize();
+    LOGIC.initStage(true); // Pass true to wait for roll before starting
+    UI.renderRollButton();
+    UI.update(); UI.elements.crownDisplay.innerText = STATE.crowns; 
+    requestAnimationFrame(gameLoop);
+}
+
+window.onload = () => { setTimeout(initGame, 100); };
+</script>
+</body>
+</html>

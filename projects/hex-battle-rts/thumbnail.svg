@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Hex Battle RTS prototype thumbnail</title>
+  <desc id="desc">Real-time strategy tower defense game with hexagonal grid-based battles, unit upgrades, and lab technology progression.</desc>
+  <rect width="960" height="540" fill="#0a0e27"/>
+  <rect x="58" y="48" width="844" height="444" rx="24" fill="#1a1c23" stroke="#4ade80" stroke-width="4"/>
+
+  <!-- Title -->
+  <text x="92" y="96" fill="#4ade80" font-family="Arial, sans-serif" font-size="48" font-weight="800">HEX BATTLE RTS</text>
+
+  <!-- Hexagon grid background -->
+  <g fill="none" stroke="#374151" stroke-width="2" opacity="0.6">
+    <!-- Top row hexagons -->
+    <circle cx="180" cy="160" r="24" fill="#22c55e" opacity="0.8"/>
+    <circle cx="280" cy="160" r="24" fill="#0ea5e9" opacity="0.8"/>
+    <circle cx="380" cy="160" r="24" fill="#8b5cf6" opacity="0.8"/>
+
+    <!-- Middle row hexagons -->
+    <circle cx="130" cy="240" r="24" fill="#ec4899" opacity="0.8"/>
+    <circle cx="230" cy="240" r="24" fill="#eab308" opacity="0.8"/>
+    <circle cx="330" cy="240" r="24" fill="#f87171" opacity="0.8"/>
+    <circle cx="430" cy="240" r="24" fill="#22c55e" opacity="0.6"/>
+
+    <!-- Bottom row hexagons -->
+    <circle cx="180" cy="320" r="24" fill="#0ea5e9" opacity="0.6"/>
+    <circle cx="280" cy="320" r="24" fill="#8b5cf6" opacity="0.6"/>
+    <circle cx="380" cy="320" r="24" fill="#ec4899" opacity="0.6"/>
+  </g>
+
+  <!-- Unit icons -->
+  <g font-family="Arial, sans-serif" font-weight="800" text-anchor="middle">
+    <text x="180" y="170" font-size="28" fill="#fff">⚔️</text>
+    <text x="280" y="170" font-size="28" fill="#fff">🏹</text>
+    <text x="380" y="170" font-size="28" fill="#fff">🔮</text>
+
+    <text x="130" y="250" font-size="28" fill="#fff">❤️</text>
+    <text x="230" y="250" font-size="28" fill="#fff">🛡️</text>
+  </g>
+
+  <!-- Right side: Upgrade panels -->
+  <g>
+    <rect x="570" y="130" width="88" height="130" rx="12" fill="#2d323e" stroke="#fbbf24" stroke-width="3"/>
+    <rect x="680" y="130" width="88" height="130" rx="12" fill="#2d323e" stroke="#a855f7" stroke-width="3"/>
+    <rect x="790" y="130" width="88" height="130" rx="12" fill="#2d323e" stroke="#4ade80" stroke-width="3"/>
+
+    <rect x="570" y="280" width="308" height="70" rx="12" fill="#2d323e" stroke="#4ade80" stroke-width="2"/>
+  </g>
+
+  <!-- Upgrade icons -->
+  <g font-family="Arial, sans-serif" font-weight="800" text-anchor="middle" font-size="20" fill="#fbbf24">
+    <text x="614" y="205">POWER</text>
+    <text x="724" y="205" fill="#a855f7">HP</text>
+    <text x="834" y="205" fill="#4ade80">SPD</text>
+
+    <text x="724" y="325" fill="#fbbf24" font-size="18">LAB: +5% DMG / +5% HP</text>
+  </g>
+
+  <!-- Description -->
+  <text x="92" y="466" fill="#888" font-family="Arial, sans-serif" font-size="26">Real-time tower defense with strategy upgrades</text>
+</svg>

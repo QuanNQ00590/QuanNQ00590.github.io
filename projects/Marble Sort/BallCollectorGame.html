@@ -789,7 +789,7 @@
                 div.dataset.customerRow = row;
                 div.dataset.customerId = cust.id;
                 if (row === frontRow) div.classList.add('front-customer');
-                if (cust.isMystery && !revealedCells.has(`cust-${col}-${row}`)) {
+                if (cust.isMystery && row !== frontRow && !revealedCells.has(`cust-${col}-${row}`)) {
                     div.classList.add('mystery-cust');
                     div.innerHTML = '?';
                     div.onclick = () => revealCustomer(col, row);
